@@ -8,6 +8,44 @@ public class GameBoard : MonoBehaviour {
 
     [SerializeField] private GameTile tilePrefab = default;
 
+    [SerializeField] Texture2D gridTexture = default;
+
+    bool showPaths = false;
+
+    public bool ShowPaths {
+        get => showPaths;
+        set {
+            showPaths = value;
+            if (showPaths) {
+                foreach (GameTile tile in tiles) {
+                    tile.ShowPath();
+                }
+            }
+            else {
+                foreach (GameTile tile in tiles) {
+                    tile.HidePath();
+                }
+            }
+        }
+    }
+
+    bool showGrid = false;
+
+    public bool ShowGrid {
+        get => showGrid;
+        set {
+            showGrid = value;
+            Material m = ground.GetComponent<MeshRenderer>().material;
+            if (showGrid) {
+                m.mainTexture = gridTexture;
+                m.SetTextureScale("_BaseMap", size);
+            }
+            else {
+                m.mainTexture = null;
+            }
+        }
+    }
+
     GameTileContentFactory contentFactory;
 
     Vector2Int size;
@@ -85,8 +123,10 @@ public class GameBoard : MonoBehaviour {
             }
         }
 
-        foreach (GameTile tile in tiles) {
-            tile.ShowPath();
+        if (showPaths) {
+            foreach (GameTile tile in tiles) {
+                tile.ShowPath();
+            }
         }
 
         return true;

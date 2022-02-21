@@ -24,6 +24,7 @@ public class Game : MonoBehaviour {
 
     private void Awake() {
         board.Initialize(boardSize, tileContentFactory);
+        board.ShowGrid = true;
     }
 
     private void Update() {
@@ -37,6 +38,18 @@ public class Game : MonoBehaviour {
         }
         else if (mouse.rightButton.wasPressedThisFrame) {
             HandleAlternativeTouch();
+        }
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) {
+            Debug.Log("Keyboard not detected!");
+            return;
+        }
+        if (keyboard.pKey.wasPressedThisFrame) {
+            board.ShowPaths = !board.ShowPaths;
+        }
+        else if (keyboard.gKey.wasPressedThisFrame) {
+            board.ShowGrid = !board.ShowGrid;
         }
     }
 

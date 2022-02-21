@@ -55,6 +55,10 @@ public class GameTile : MonoBehaviour {
                             westRotation;
     }
 
+    public void HidePath() {
+        arrow.gameObject.SetActive(false);
+    }
+
     public void ClearPath() {
         distance = int.MaxValue;
         nextOnPath = null;
