@@ -18,6 +18,19 @@ public class GameTile : MonoBehaviour {
 
     public bool IsAlternative { get; set; }
 
+    private GameTileContent content;
+    public GameTileContent Content {
+        get => content;
+        set {
+            Debug.Assert(value != null, "Null assigned to content!");
+            if (content != null) {
+                content.Recycle();
+            }
+            content = value;
+            content.transform.localPosition = transform.localPosition;
+        }
+    }
+
     public static void MakeEastWestNeighbors(GameTile east, GameTile west) {
         Debug.Assert(west.east == null && east.west == null, "Redefined neighbors!");
         west.east = east;

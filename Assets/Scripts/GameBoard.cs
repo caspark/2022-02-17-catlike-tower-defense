@@ -8,14 +8,17 @@ public class GameBoard : MonoBehaviour {
 
     [SerializeField] private GameTile tilePrefab = default;
 
+    GameTileContentFactory contentFactory;
+
     Vector2Int size;
 
     GameTile[] tiles;
 
     Queue<GameTile> searchFrontier = new Queue<GameTile>();
 
-    public void Initialize(Vector2Int size) {
+    public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
         this.size = size;
+        this.contentFactory = contentFactory;
         ground.localScale = new Vector3(size.x, size.y, 1);
 
         Vector2 offset = new Vector2((size.x - 1) * .5f, (size.y - 1) * .5f);
@@ -27,6 +30,7 @@ public class GameBoard : MonoBehaviour {
                 tile.transform.SetParent(transform, false);
                 tile.transform.localPosition = new Vector3(x - offset.x, 0, y - offset.y);
                 tile.IsAlternative = (i & 1) == 0;
+                tile.Content = contentFactory.Get(GameTileContentType.Empty);
 
                 if (x > 0) {
                     GameTile.MakeEastWestNeighbors(tile, tiles[i - 1]);
@@ -40,17 +44,22 @@ public class GameBoard : MonoBehaviour {
             }
         }
 
-        FindPaths();
+        ToggleDestination(tiles[tiles.Length / 2]);
     }
 
-    private void FindPaths() {
+    private bool FindPaths() {
         foreach (GameTile tile in tiles) {
-            tile.ClearPath();
+            if (tile.Content.Type == GameTileContentType.Destination) {
+                tile.BecomeDestination();
+                searchFrontier.Enqueue(tile);
+            }
+            else {
+                tile.ClearPath();
+            }
         }
-
-        GameTile destination = tiles[tiles.Length / 2];
-        destination.BecomeDestination();
-        searchFrontier.Enqueue(destination);
+        if (searchFrontier.Count == 0) {
+            return false;
+        }
 
         while (searchFrontier.Count > 0) {
             GameTile tile = searchFrontier.Dequeue();
@@ -73,7 +82,33 @@ public class GameBoard : MonoBehaviour {
         foreach (GameTile tile in tiles) {
             tile.ShowPath();
         }
+
+        return true;
     }
 
+    public void ToggleDestination(GameTile tile) {
+        if (tile.Content.Type == GameTileContentType.Destination) {
+            tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            if (!FindPaths()) {
+                tile.Content = contentFactory.Get(GameTileContentType.Destination);
+                FindPaths();
+            }
+        }
+        else {
+            tile.Content = contentFactory.Get(GameTileContentType.Destination);
+            FindPaths();
+        }
+    }
+
+    public GameTile GetTile(Ray ray) {
+        if (Physics.Raycast(ray, out RaycastHit hit)) {
+            int x = (int)(hit.point.x + size.x * 0.5f);
+            int y = (int)(hit.point.z + size.y * 0.5f);
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y) {
+                return tiles[x + y * size.x];
+            }
+        }
+        return null;
+    }
 
 }
