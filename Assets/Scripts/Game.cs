@@ -35,9 +35,18 @@ public class Game : MonoBehaviour {
         if (mouse.leftButton.wasPressedThisFrame) {
             HandleTouch();
         }
+        else if (mouse.rightButton.wasPressedThisFrame) {
+            HandleAlternativeTouch();
+        }
     }
 
     private void HandleTouch() {
+        GameTile tile = board.GetTile(TouchRay);
+        if (tile != null) {
+            board.ToggleWall(tile);
+        }
+    }
+    private void HandleAlternativeTouch() {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
             board.ToggleDestination(tile);

@@ -72,7 +72,7 @@ public class GameTile : MonoBehaviour {
         }
         neighbor.distance = distance + 1;
         neighbor.nextOnPath = this;
-        return neighbor;
+        return neighbor.Content.Type != GameTileContentType.Wall ? neighbor : null;
     }
 
     public GameTile GrowPathNorth() => GrowPathTo(north);

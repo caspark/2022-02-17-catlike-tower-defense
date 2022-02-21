@@ -1,3 +1,3 @@
 public enum GameTileContentType {
-    Empty, Destination
+    Empty, Destination, Wall
 }

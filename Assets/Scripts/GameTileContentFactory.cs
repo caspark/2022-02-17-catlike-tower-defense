@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameTileContentFactory : ScriptableObject {
     [SerializeField] private GameTileContent destinationPrefab = default;
     [SerializeField] private GameTileContent emptyPrefab = default;
+    [SerializeField] private GameTileContent wallPrefab = default;
 
     Scene contentScene;
 
@@ -18,6 +19,7 @@ public class GameTileContentFactory : ScriptableObject {
         switch (type) {
             case GameTileContentType.Empty: return Get(emptyPrefab);
             case GameTileContentType.Destination: return Get(destinationPrefab);
+            case GameTileContentType.Wall: return Get(wallPrefab);
         }
         Debug.Assert(false, $"Unsupported type: {type}");
         return null;
