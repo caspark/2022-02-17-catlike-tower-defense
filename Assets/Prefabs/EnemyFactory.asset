@@ -19,3 +19,6 @@ MonoBehaviour:
   pathOffset:
     min: -0.25
     max: 0.25
+  speed:
+    min: 0.75
+    max: 2

@@ -11,10 +11,15 @@ public class EnemyFactory : GameObjectFactory {
     [SerializeField, FloatRangeSlider(-0.4f, 0.4f)]
     FloatRange pathOffset = new FloatRange(0f);
 
+    [SerializeField, FloatRangeSlider(0.2f, 5f)]
+    FloatRange speed = new FloatRange(1f);
+
     public Enemy Get() {
         Enemy instance = CreateGameObjectInstance(prefab);
         instance.OriginFactory = this;
-        instance.Initialize(scale.RandomValueInRange, pathOffset.RandomValueInRange);
+        instance.Initialize(scale.RandomValueInRange,
+                    speed.RandomValueInRange,
+                    pathOffset.RandomValueInRange);
         return instance;
     }
 
