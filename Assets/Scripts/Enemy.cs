@@ -22,6 +22,10 @@ public class Enemy : MonoBehaviour {
     private DirectionChange directionChange;
     private float directionAngleFrom, directionAngleTo;
 
+    public void Initialize(float scale) {
+        model.localScale = new Vector3(scale, scale, scale);
+    }
+
     public bool GameUpdate() {
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
