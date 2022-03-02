@@ -16,6 +16,9 @@ public class Enemy : MonoBehaviour {
     private GameTile tileFrom, tileTo;
     private Vector3 positionFrom, positionTo;
     private float progress;
+    private Direction direction;
+    private DirectionChange directionChange;
+    private float directionAngleFrom, directionAngleTo;
 
     public bool GameUpdate() {
         progress += Time.deltaTime;
@@ -26,12 +29,14 @@ public class Enemy : MonoBehaviour {
                 OriginFactory.Reclaim(this);
                 return false;
             }
-            positionFrom = positionTo;
-            positionTo = tileTo.ExitPoint;
-            transform.localRotation = tileFrom.PathDirection.GetRotation();
             progress -= 1f;
+            PrepareNextState();
         }
-        transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
+        transform.localPosition = Vector3.Lerp(positionFrom, positionTo, progress);
+        if (directionChange != DirectionChange.None) {
+            float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress);
+            transform.localRotation = Quaternion.Euler(0f, angle, 0f);
+        }
         return true;
     }
 
@@ -39,9 +44,48 @@ public class Enemy : MonoBehaviour {
         Debug.Assert(tile.NextTileOnPath != null, "Nowhere to go!", this);
         tileFrom = tile;
         tileTo = tile.NextTileOnPath;
+        progress = 0f;
+        PrepareIntro();
+    }
+
+    void PrepareIntro() {
         positionFrom = tileFrom.transform.localPosition;
         positionTo = tileTo.ExitPoint;
-        transform.localRotation = tileFrom.PathDirection.GetRotation();
-        progress = 0f;
+        direction = tileFrom.PathDirection;
+        directionChange = DirectionChange.None;
+        directionAngleFrom = direction.GetAngle();
+        directionAngleTo = direction.GetAngle();
+        transform.localRotation = direction.GetRotation();
+    }
+
+    void PrepareNextState() {
+        positionFrom = positionTo;
+        positionTo = tileTo.ExitPoint;
+        directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection);
+        direction = tileFrom.PathDirection;
+        directionAngleFrom = directionAngleTo;
+        switch (directionChange) {
+            case DirectionChange.None: PrepareForward(); break;
+            case DirectionChange.TurnRight: PrepareTurnRight(); break;
+            case DirectionChange.TurnLeft: PrepareTurnLeft(); break;
+            default: PrepareTurnAround(); break;
+        }
+    }
+
+    void PrepareForward() {
+        transform.localRotation = direction.GetRotation();
+        directionAngleTo = direction.GetAngle();
+    }
+
+    void PrepareTurnRight() {
+        directionAngleTo = directionAngleFrom + 90f;
+    }
+
+    void PrepareTurnLeft() {
+        directionAngleTo = directionAngleFrom - 90f;
+    }
+
+    void PrepareTurnAround() {
+        directionAngleTo = directionAngleFrom + 180f;
     }
 }

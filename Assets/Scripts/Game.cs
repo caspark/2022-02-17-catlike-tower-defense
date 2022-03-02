@@ -12,7 +12,7 @@ public class Game : MonoBehaviour {
 
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
     [SerializeField] private EnemyFactory enemyFactory = default;
-    [SerializeField, Range(0.1f, 10f)] private float spawnSpeed = 1f;
+    [SerializeField, Range(0.0f, 10f)] private float spawnSpeed = 1f;
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     float spawnProgress;
@@ -55,6 +55,9 @@ public class Game : MonoBehaviour {
         }
         else if (keyboard.gKey.wasPressedThisFrame) {
             board.ShowGrid = !board.ShowGrid;
+        }
+        else if (keyboard.eKey.wasPressedThisFrame) {
+            spawnProgress += 1;
         }
 
         spawnProgress += spawnSpeed * Time.deltaTime;
