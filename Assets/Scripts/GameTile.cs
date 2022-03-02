@@ -17,6 +17,7 @@ public class GameTile : MonoBehaviour {
     public bool HasPath => distance != int.MaxValue;
 
     public bool IsAlternative { get; set; }
+    public GameTile NextTileOnPath => nextOnPath;
 
     private GameTileContent content;
     public GameTileContent Content {

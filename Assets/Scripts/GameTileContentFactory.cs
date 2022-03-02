@@ -9,6 +9,7 @@ public class GameTileContentFactory : GameObjectFactory {
     [SerializeField] private GameTileContent wallPrefab = default;
     [SerializeField] private GameTileContent spawnPointPrefab = default;
 
+
     public void Reclaim(GameTileContent content) {
         Debug.Assert(content.OriginFactory == this, "Wrong factory reclaimed!");
         Destroy(content.gameObject);

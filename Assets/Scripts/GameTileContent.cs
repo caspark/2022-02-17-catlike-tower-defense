@@ -7,6 +7,7 @@ public class GameTileContent : MonoBehaviour {
 
     public GameTileContentType Type => type;
 
+
     GameTileContentFactory originFactory;
 
     public GameTileContentFactory OriginFactory {

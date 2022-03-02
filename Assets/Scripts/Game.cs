@@ -16,6 +16,7 @@ public class Game : MonoBehaviour {
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     float spawnProgress;
+    EnemyCollection enemies = new EnemyCollection();
 
     private void OnValidate() {
         if (boardSize.x < 2) {
@@ -61,12 +62,14 @@ public class Game : MonoBehaviour {
             spawnProgress -= 1f;
             SpawnEnemy();
         }
+        enemies.GameUpdate();
     }
 
     private void SpawnEnemy() {
         GameTile spawnPoint = board.GetSpawnPoint(Random.Range(0, board.SpawnPointCount));
         Enemy enemy = enemyFactory.Get();
         enemy.spawnOn(spawnPoint);
+        enemies.Add(enemy);
     }
 
     private void HandleTouch() {
