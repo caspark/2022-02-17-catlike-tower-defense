@@ -25,8 +25,6 @@ public class Enemy : MonoBehaviour {
     public bool GameUpdate() {
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
-            tileFrom = tileTo;
-            tileTo = tileTo.NextTileOnPath;
             if (tileTo == null) {
                 OriginFactory.Reclaim(this);
                 return false;
@@ -65,7 +63,13 @@ public class Enemy : MonoBehaviour {
     }
 
     void PrepareNextState() {
+        tileFrom = tileTo;
+        tileTo = tileTo.NextTileOnPath;
         positionFrom = positionTo;
+        if (tileTo == null) {
+            PrepareOutro();
+            return;
+        }
         positionTo = tileFrom.ExitPoint;
         directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection);
         direction = tileFrom.PathDirection;
@@ -103,6 +107,15 @@ public class Enemy : MonoBehaviour {
         directionAngleTo = directionAngleFrom + 180f;
         model.localPosition = Vector3.zero;
         transform.localPosition = positionFrom;
+        progressFactor = 2f;
+    }
+
+    void PrepareOutro() {
+        positionTo = tileFrom.transform.localPosition;
+        directionChange = DirectionChange.None;
+        directionAngleTo = direction.GetAngle();
+        model.localPosition = Vector3.zero;
+        transform.localRotation = direction.GetRotation();
         progressFactor = 2f;
     }
 }
