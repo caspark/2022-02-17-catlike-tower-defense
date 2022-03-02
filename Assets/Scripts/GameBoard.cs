@@ -46,6 +46,8 @@ public class GameBoard : MonoBehaviour {
         }
     }
 
+    public int SpawnPointCount => spawnPoints.Count;
+
     GameTileContentFactory contentFactory;
 
     Vector2Int size;
@@ -53,6 +55,7 @@ public class GameBoard : MonoBehaviour {
     GameTile[] tiles;
 
     Queue<GameTile> searchFrontier = new Queue<GameTile>();
+    private List<GameTile> spawnPoints = new List<GameTile>();
 
     public void Initialize(Vector2Int size, GameTileContentFactory contentFactory) {
         this.size = size;
@@ -83,6 +86,7 @@ public class GameBoard : MonoBehaviour {
         }
 
         ToggleDestination(tiles[tiles.Length / 2]);
+        ToggleSpawnPoint(tiles[0]);
     }
 
     private bool FindPaths() {
@@ -160,6 +164,19 @@ public class GameBoard : MonoBehaviour {
         }
     }
 
+    public void ToggleSpawnPoint(GameTile tile) {
+        if (tile.Content.Type == GameTileContentType.SpawnPoint) {
+            if (spawnPoints.Count > 1) {
+                spawnPoints.Remove(tile);
+                tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            }
+        }
+        else if (tile.Content.Type == GameTileContentType.Empty) {
+            tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
+            spawnPoints.Add(tile);
+        }
+    }
+
     public GameTile GetTile(Ray ray) {
         if (Physics.Raycast(ray, out RaycastHit hit)) {
             int x = (int)(hit.point.x + size.x * 0.5f);
@@ -169,6 +186,10 @@ public class GameBoard : MonoBehaviour {
             }
         }
         return null;
+    }
+
+    public GameTile GetSpawnPoint(int index) {
+        return spawnPoints[index];
     }
 
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
     [SerializeField] private Vector2Int boardSize = new Vector2Int(11, 11);
@@ -10,8 +11,11 @@ public class Game : MonoBehaviour {
     [SerializeField] private GameBoard board = default;
 
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
+    [SerializeField] private EnemyFactory enemyFactory = default;
+    [SerializeField, Range(0.1f, 10f)] private float spawnSpeed = 1f;
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+    float spawnProgress;
 
     private void OnValidate() {
         if (boardSize.x < 2) {
@@ -51,6 +55,18 @@ public class Game : MonoBehaviour {
         else if (keyboard.gKey.wasPressedThisFrame) {
             board.ShowGrid = !board.ShowGrid;
         }
+
+        spawnProgress += spawnSpeed * Time.deltaTime;
+        while (spawnProgress >= 1f) {
+            spawnProgress -= 1f;
+            SpawnEnemy();
+        }
+    }
+
+    private void SpawnEnemy() {
+        GameTile spawnPoint = board.GetSpawnPoint(Random.Range(0, board.SpawnPointCount));
+        Enemy enemy = enemyFactory.Get();
+        enemy.spawnOn(spawnPoint);
     }
 
     private void HandleTouch() {
@@ -62,7 +78,12 @@ public class Game : MonoBehaviour {
     private void HandleAlternativeTouch() {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
-            board.ToggleDestination(tile);
+            if (Keyboard.current.leftShiftKey.isPressed) {
+                board.ToggleDestination(tile);
+            }
+            else {
+                board.ToggleSpawnPoint(tile);
+            }
         }
     }
 }
