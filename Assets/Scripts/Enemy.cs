@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour {
 
+    [SerializeField] Transform model = default;
+
     private EnemyFactory originFactory;
 
     public EnemyFactory OriginFactory {
@@ -32,8 +34,10 @@ public class Enemy : MonoBehaviour {
             progress -= 1f;
             PrepareNextState();
         }
-        transform.localPosition = Vector3.Lerp(positionFrom, positionTo, progress);
-        if (directionChange != DirectionChange.None) {
+        if (directionChange == DirectionChange.None) {
+            transform.localPosition = Vector3.Lerp(positionFrom, positionTo, progress);
+        }
+        else {
             float angle = Mathf.LerpUnclamped(directionAngleFrom, directionAngleTo, progress);
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
         }
@@ -75,17 +79,24 @@ public class Enemy : MonoBehaviour {
     void PrepareForward() {
         transform.localRotation = direction.GetRotation();
         directionAngleTo = direction.GetAngle();
+        model.localPosition = Vector3.zero;
     }
 
     void PrepareTurnRight() {
         directionAngleTo = directionAngleFrom + 90f;
+        model.localPosition = new Vector3(-0.5f, 0f);
+        transform.localPosition = positionFrom + direction.GetHalfVector();
     }
 
     void PrepareTurnLeft() {
         directionAngleTo = directionAngleFrom - 90f;
+        model.localPosition = new Vector3(0.5f, 0f);
+        transform.localPosition = positionFrom + direction.GetHalfVector();
     }
 
     void PrepareTurnAround() {
         directionAngleTo = directionAngleFrom + 180f;
+        model.localPosition = Vector3.zero;
+        transform.localPosition = positionFrom;
     }
 }

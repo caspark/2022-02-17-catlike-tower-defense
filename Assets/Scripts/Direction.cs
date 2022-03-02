@@ -16,6 +16,13 @@ public static class DirectionExtensions {
         Quaternion.Euler(0f, 270f, 0f),
     };
 
+    static Vector3[] halfVectors = {
+        Vector3.forward * 0.5f,
+        Vector3.right * 0.5f,
+        Vector3.back * 0.5f,
+        Vector3.left * 0.5f
+    };
+
     public static Quaternion GetRotation(this Direction direction) {
         return rotations[(int)direction];
     }
@@ -36,5 +43,9 @@ public static class DirectionExtensions {
 
     public static float GetAngle(this Direction direction) {
         return (float)direction * 90f;
+    }
+
+    public static Vector3 GetHalfVector(this Direction direction) {
+        return halfVectors[(int)direction];
     }
 }
