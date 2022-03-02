@@ -17,13 +17,13 @@ public class Enemy : MonoBehaviour {
 
     private GameTile tileFrom, tileTo;
     private Vector3 positionFrom, positionTo;
-    private float progress;
+    private float progress, progressFactor;
     private Direction direction;
     private DirectionChange directionChange;
     private float directionAngleFrom, directionAngleTo;
 
     public bool GameUpdate() {
-        progress += Time.deltaTime;
+        progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             tileFrom = tileTo;
             tileTo = tileTo.NextTileOnPath;
@@ -31,8 +31,9 @@ public class Enemy : MonoBehaviour {
                 OriginFactory.Reclaim(this);
                 return false;
             }
-            progress -= 1f;
+            progress = (progress - 1f) / progressFactor;
             PrepareNextState();
+            progress *= progressFactor;
         }
         if (directionChange == DirectionChange.None) {
             transform.localPosition = Vector3.Lerp(positionFrom, positionTo, progress);
@@ -60,6 +61,7 @@ public class Enemy : MonoBehaviour {
         directionAngleFrom = direction.GetAngle();
         directionAngleTo = direction.GetAngle();
         transform.localRotation = direction.GetRotation();
+        progressFactor = 2f;
     }
 
     void PrepareNextState() {
@@ -80,23 +82,27 @@ public class Enemy : MonoBehaviour {
         transform.localRotation = direction.GetRotation();
         directionAngleTo = direction.GetAngle();
         model.localPosition = Vector3.zero;
+        progressFactor = 1f;
     }
 
     void PrepareTurnRight() {
         directionAngleTo = directionAngleFrom + 90f;
         model.localPosition = new Vector3(-0.5f, 0f);
         transform.localPosition = positionFrom + direction.GetHalfVector();
+        progressFactor = 1f / (Mathf.PI * 0.25f);
     }
 
     void PrepareTurnLeft() {
         directionAngleTo = directionAngleFrom - 90f;
         model.localPosition = new Vector3(0.5f, 0f);
         transform.localPosition = positionFrom + direction.GetHalfVector();
+        progressFactor = 1f / (Mathf.PI * 0.25f);
     }
 
     void PrepareTurnAround() {
         directionAngleTo = directionAngleFrom + 180f;
         model.localPosition = Vector3.zero;
         transform.localPosition = positionFrom;
+        progressFactor = 2f;
     }
 }
