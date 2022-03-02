@@ -50,7 +50,7 @@ public class Enemy : MonoBehaviour {
 
     void PrepareIntro() {
         positionFrom = tileFrom.transform.localPosition;
-        positionTo = tileTo.ExitPoint;
+        positionTo = tileFrom.ExitPoint;
         direction = tileFrom.PathDirection;
         directionChange = DirectionChange.None;
         directionAngleFrom = direction.GetAngle();
@@ -60,7 +60,7 @@ public class Enemy : MonoBehaviour {
 
     void PrepareNextState() {
         positionFrom = positionTo;
-        positionTo = tileTo.ExitPoint;
+        positionTo = tileFrom.ExitPoint;
         directionChange = direction.GetDirectionChangeTo(tileFrom.PathDirection);
         direction = tileFrom.PathDirection;
         directionAngleFrom = directionAngleTo;

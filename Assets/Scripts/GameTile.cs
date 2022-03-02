@@ -87,8 +87,8 @@ public class GameTile : MonoBehaviour {
         return neighbor.Content.Type != GameTileContentType.Wall ? neighbor : null;
     }
 
-    public GameTile GrowPathNorth() => GrowPathTo(north, Direction.North);
-    public GameTile GrowPathEast() => GrowPathTo(east, Direction.East);
-    public GameTile GrowPathSouth() => GrowPathTo(south, Direction.South);
-    public GameTile GrowPathWest() => GrowPathTo(west, Direction.West);
+    public GameTile GrowPathNorth() => GrowPathTo(north, Direction.South);
+    public GameTile GrowPathEast() => GrowPathTo(east, Direction.West);
+    public GameTile GrowPathSouth() => GrowPathTo(south, Direction.North);
+    public GameTile GrowPathWest() => GrowPathTo(west, Direction.East);
 }
