@@ -26,14 +26,27 @@ public class Enemy : MonoBehaviour {
     private float speed;
     private float pathOffset;
 
+    private float Health;
+
     public void Initialize(float scale, float speed, float pathOffset) {
         model.localScale = new Vector3(scale, scale, scale);
         this.Scale = scale;
         this.speed = speed;
         this.pathOffset = pathOffset;
+        Health = 100f * scale;
+    }
+
+    public void ApplyDamage(float damage) {
+        Debug.Assert(damage >= 0f, "Negative damage applied!");
+        Health -= damage;
     }
 
     public bool GameUpdate() {
+        if (Health <= 0f) {
+            Debug.Log("Enemy died!", this);
+            OriginFactory.Reclaim(this);
+            return false;
+        }
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             if (tileTo == null) {

@@ -131,7 +131,6 @@ public class GameBoard : MonoBehaviour {
 
         foreach (GameTile tile in tiles) {
             if (!tile.HasPath) {
-                Debug.Log("Tile does not have a path", tile);
                 return false;
             }
         }
@@ -142,7 +141,6 @@ public class GameBoard : MonoBehaviour {
             }
         }
 
-        Debug.Log("Valid paths found");
         return true;
     }
 
