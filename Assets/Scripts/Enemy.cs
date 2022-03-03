@@ -15,6 +15,8 @@ public class Enemy : MonoBehaviour {
         }
     }
 
+    public float Scale { get; private set; }
+
     private GameTile tileFrom, tileTo;
     private Vector3 positionFrom, positionTo;
     private float progress, progressFactor;
@@ -26,6 +28,7 @@ public class Enemy : MonoBehaviour {
 
     public void Initialize(float scale, float speed, float pathOffset) {
         model.localScale = new Vector3(scale, scale, scale);
+        this.Scale = scale;
         this.speed = speed;
         this.pathOffset = pathOffset;
     }
