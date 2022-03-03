@@ -1,0 +1,60 @@
+﻿name: Reusable - Builder
+
+on:
+  workflow_call:
+    inputs: 
+      version:
+        type: string
+        required: true
+    secrets:
+      UNITY_LICENSE:
+        required: true
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  build:
+    name: Build for ${{ matrix.targetPlatform }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        targetPlatform:
+          - StandaloneWindows64
+          - StandaloneOSX
+          - StandaloneLinux64
+
+    outputs:
+      buildVersion: ${{ steps.build.outputs.buildVersion }}
+      
+    steps:
+      - run: echo Building ${{ inputs.version }}...
+
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          lfs: true
+          
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-${{ matrix.targetPlatform }}-
+            Library-
+            
+      - uses: game-ci/unity-builder@v2
+        id: build
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          targetPlatform: ${{ matrix.targetPlatform }}
+          buildName: TowerDefense
+          versioning: Custom
+          version: ${{ inputs.version }}
+          
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}

@@ -1,0 +1,21 @@
+﻿name: Build
+
+on: push
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  SHA: ${GITHUB_SHA:8}
+
+jobs:
+  version:
+    uses: ./.github/workflows/versioner.yml
+    with:
+      type: dev
+      
+  build:
+    needs: version
+    uses: ./.github/workflows/builder.yml
+    with:
+      version: ${{ needs.version.outputs.version }}
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}

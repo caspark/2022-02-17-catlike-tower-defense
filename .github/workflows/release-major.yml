@@ -1,0 +1,27 @@
+name: Release - Major
+
+on: workflow_dispatch
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+  version:
+    uses: ./.github/workflows/versioner.yml
+    with:
+      type: major
+      
+  build:
+    needs: version
+    uses: ./.github/workflows/builder.yml
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+    with:
+      version: ${{ needs.version.outputs.version }}
+  
+  release:
+    needs: [version, build]
+    name: Create Release 🚀
+    uses: ./.github/workflows/releaser.yml
+    with:
+      version: ${{ needs.version.outputs.version }}

@@ -1,0 +1,81 @@
+name: Reusable - Releaser
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: true
+
+env:
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+
+jobs:
+ 
+  release:
+#    needs: [version, build]
+    name: Create Release 🚀
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          
+      - name: Tag Repository
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          custom_tag: ${{ inputs.version }}
+          
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Build-StandaloneWindows64
+          path: build/StandaloneWindows64
+          
+      - name: Download OSX Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Build-StandaloneOSX
+          path: build/StandaloneOSX
+
+      - name: Download Linux Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Build-StandaloneLinux64
+          path: build/StandaloneLinux64
+
+      - name: Create Windows Zip 📁
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          directory: build/StandaloneWindows64/
+          filename: ../../towerdefense-win64-${{ inputs.version }}.zip
+          
+      - name: Create OSX Zip 📁
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'zip'
+          directory: build/StandaloneOSX/
+          filename: ../../towerdefense-osx-${{ inputs.version }}.zip
+          
+      - name: Create Linux tarball 📁
+        uses: thedoctor0/zip-release@master
+        with:
+          type: 'tar'
+          directory: build/StandaloneLinux64/
+          filename: ../../towerdefense-linux-${{ inputs.version }}.tar.gz
+          
+      - name: Info
+        run: ls -al
+         
+      - name: Release 🚀
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "*.zip, *.tar.gz"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.tag_version.outputs.new_tag }}
+          name: Release ${{ steps.tag_version.outputs.new_tag }}
+          body: ${{ steps.tag_version.outputs.changelog }}

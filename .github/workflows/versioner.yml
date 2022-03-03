@@ -1,0 +1,49 @@
+﻿name: Reusable - Versioner
+
+on:
+  workflow_call:
+    inputs:
+      type:
+        type: string
+        required: true
+    outputs:
+      version:
+        value: ${{ jobs.version.outputs.version }}
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.0
+      - name: 'Get next version'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+      - id: hash
+        run: echo "::set-output name=hash::$(git rev-parse --short HEAD)"
+      - id: version
+        run: |
+          echo Version Type: ${{ inputs.type }}
+          if [ "${{ inputs.type }}" == "dev" ]; then
+            echo "::set-output name=version::${{ steps.semvers.outputs.patch }}-$(git rev-parse --short HEAD)";
+          fi
+          if [ "${{ inputs.type }}" == "patch" ]; then
+            echo "::set-output name=version::${{ steps.semvers.outputs.patch }}";
+          fi
+          if [ "${{ inputs.type }}" == "minor" ]; then
+            echo "::set-output name=version::${{ steps.semvers.outputs.minor }}";
+          fi
+          if [ "${{ inputs.type }}" == "major" ]; then
+            echo "::set-output name=version::${{ steps.semvers.outputs.major }}";
+          fi 
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      
