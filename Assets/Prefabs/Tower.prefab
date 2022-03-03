@@ -326,6 +326,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
+  targetingRange: 1.5
+  turret: {fileID: 276532524036914438}
+  laserBeam: {fileID: 7530794065566424802}
 --- !u!1 &9159412737721594418
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,7 +356,7 @@ Transform:
   m_GameObject: {fileID: 9159412737721594418}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2699882537999954618}
