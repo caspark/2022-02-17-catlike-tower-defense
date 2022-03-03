@@ -66,19 +66,25 @@ public class Game : MonoBehaviour {
             SpawnEnemy();
         }
         enemies.GameUpdate();
+        board.GameUpdate();
     }
 
     private void SpawnEnemy() {
         GameTile spawnPoint = board.GetSpawnPoint(Random.Range(0, board.SpawnPointCount));
         Enemy enemy = enemyFactory.Get();
-        enemy.spawnOn(spawnPoint);
         enemies.Add(enemy);
+        enemy.spawnOn(spawnPoint);
     }
 
     private void HandleTouch() {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
-            board.ToggleWall(tile);
+            if (Keyboard.current.leftShiftKey.isPressed) {
+                board.ToggleTower(tile);
+            }
+            else {
+                board.ToggleWall(tile);
+            }
         }
     }
     private void HandleAlternativeTouch() {
