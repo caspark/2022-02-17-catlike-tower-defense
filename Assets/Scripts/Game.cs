@@ -18,6 +18,8 @@ public class Game : MonoBehaviour {
     float spawnProgress;
     EnemyCollection enemies = new EnemyCollection();
 
+    TowerType selectedTowerType;
+
     private void OnValidate() {
         if (boardSize.x < 2) {
             boardSize.x = 2;
@@ -60,6 +62,15 @@ public class Game : MonoBehaviour {
             spawnProgress += 1;
         }
 
+        if (keyboard.digit1Key.wasPressedThisFrame) {
+            selectedTowerType = TowerType.Laser;
+            Debug.Log("Selected tower type: " + selectedTowerType);
+        }
+        else if (keyboard.digit2Key.wasPressedThisFrame) {
+            selectedTowerType = TowerType.Mortar;
+            Debug.Log("Selected tower type: " + selectedTowerType);
+        }
+
         spawnProgress += spawnSpeed * Time.deltaTime;
         while (spawnProgress >= 1f) {
             spawnProgress -= 1f;
@@ -81,7 +92,7 @@ public class Game : MonoBehaviour {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
             if (Keyboard.current.leftShiftKey.isPressed) {
-                board.ToggleTower(tile);
+                board.ToggleTower(tile, selectedTowerType);
             }
             else {
                 board.ToggleWall(tile);
