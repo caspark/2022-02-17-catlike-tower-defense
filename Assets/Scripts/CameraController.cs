@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour {
             0,
             keyboard.wKey.ReadValue() - keyboard.sKey.ReadValue());
         if (dir.sqrMagnitude > 0.01f) {
-            transform.Translate(dir.normalized * cameraMoveSpeed * Time.deltaTime);
+            transform.Translate(dir.normalized * cameraMoveSpeed * Time.unscaledDeltaTime);
         }
 
         if (mouse.middleButton.wasPressedThisFrame) {
@@ -52,7 +52,7 @@ public class CameraController : MonoBehaviour {
             mouseDragStartPosition = Vector2.zero;
         }
         if (mouseDragStartPosition != Vector2.zero) {
-            var diff = (mouse.position.ReadValue() - mouseDragStartPosition) * Time.deltaTime;
+            var diff = (mouse.position.ReadValue() - mouseDragStartPosition) * Time.unscaledDeltaTime;
 
             transform.localRotation = Quaternion.Euler(
                 transform.localRotation.eulerAngles.x,
@@ -62,7 +62,7 @@ public class CameraController : MonoBehaviour {
             mouseDragStartPosition = mouse.position.ReadValue();
         }
         if (mouse.scroll.ReadValue().y != 0) {
-            primaryCamera3P.VerticalArmLength = cameraZoomRange.Clamp(primaryCamera3P.VerticalArmLength - mouse.scroll.ReadValue().y * Time.deltaTime * cameraZoomSpeed);
+            primaryCamera3P.VerticalArmLength = cameraZoomRange.Clamp(primaryCamera3P.VerticalArmLength - mouse.scroll.ReadValue().y * Time.unscaledDeltaTime * cameraZoomSpeed);
         }
     }
 

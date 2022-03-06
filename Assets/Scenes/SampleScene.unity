@@ -160,6 +160,7 @@ MonoBehaviour:
     min: 1
     max: 12
   primaryCamera: {fileID: 846581258}
+  drawDebugGizmo: 0
 --- !u!4 &103674846
 Transform:
   m_ObjectHideFlags: 0
@@ -308,7 +309,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShowDebugText: 0
   m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 0
+  m_IgnoreTimeScale: 1
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
