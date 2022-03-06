@@ -62,7 +62,7 @@ public class CameraController : MonoBehaviour {
             mouseDragStartPosition = mouse.position.ReadValue();
         }
         if (mouse.scroll.ReadValue().y != 0) {
-            primaryCamera3P.VerticalArmLength = cameraZoomRange.Clamp(primaryCamera3P.VerticalArmLength + mouse.scroll.ReadValue().y * Time.deltaTime * cameraZoomSpeed);
+            primaryCamera3P.VerticalArmLength = cameraZoomRange.Clamp(primaryCamera3P.VerticalArmLength - mouse.scroll.ReadValue().y * Time.deltaTime * cameraZoomSpeed);
         }
     }
 
