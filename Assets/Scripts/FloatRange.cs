@@ -16,6 +16,10 @@ public struct FloatRange {
         }
     }
 
+    public float Clamp(float value) {
+        return Mathf.Clamp(value, min, max);
+    }
+
     public FloatRange(float value) {
         min = max = value;
     }
