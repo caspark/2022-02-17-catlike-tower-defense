@@ -13,6 +13,7 @@ public class Game : MonoBehaviour {
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
     [SerializeField] private WarFactory warFactory = default;
     [SerializeField] private GameScenario scenario = default;
+    [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
     GameScenario.State activeScenario;
 
     static Game instance;
@@ -21,6 +22,7 @@ public class Game : MonoBehaviour {
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
     TowerType selectedTowerType;
+    int playerHealth;
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
@@ -51,7 +53,18 @@ public class Game : MonoBehaviour {
         board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
         activeScenario = scenario.Begin();
+        playerHealth = startingPlayerHealth;
     }
+
+    void BeginNewGame() {
+        Debug.Log("Beginning new game");
+        enemies.Clear();
+        nonEnemies.Clear();
+        board.Clear();
+        activeScenario = scenario.Begin();
+        playerHealth = startingPlayerHealth;
+    }
+
 
     private void Update() {
         Mouse mouse = Mouse.current;
@@ -90,6 +103,11 @@ public class Game : MonoBehaviour {
             BeginNewGame();
         }
 
+        if (playerHealth <= 0 && startingPlayerHealth > 0) {
+            Debug.Log("Defeat!");
+            BeginNewGame();
+        }
+
         activeScenario.Progress();
 
         enemies.GameUpdate();
@@ -105,6 +123,10 @@ public class Game : MonoBehaviour {
         Enemy enemy = factory.Get(type);
         enemy.spawnOn(spawnPoint);
         instance.enemies.Add(enemy);
+    }
+
+    public static void EnemyReachedDestination() {
+        instance.playerHealth -= 1;
     }
 
     private void HandleTouch() {
@@ -130,11 +152,4 @@ public class Game : MonoBehaviour {
         }
     }
 
-    void BeginNewGame() {
-        Debug.Log("Beginning new game");
-        enemies.Clear();
-        nonEnemies.Clear();
-        board.Clear();
-        activeScenario = scenario.Begin();
-    }
 }

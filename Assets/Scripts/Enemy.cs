@@ -50,6 +50,7 @@ public class Enemy : GameBehavior {
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             if (tileTo == null) {
+                Game.EnemyReachedDestination();
                 Recycle();
                 return false;
             }
