@@ -14,10 +14,13 @@ public class Game : MonoBehaviour {
     [SerializeField] private WarFactory warFactory = default;
     [SerializeField] private GameScenario scenario = default;
     [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
-    GameScenario.State activeScenario;
+    [SerializeField] private float playSpeed = 1f;
+
+    const float pausedTimeScale = 0.01f;
 
     static Game instance;
 
+    GameScenario.State activeScenario;
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
@@ -84,11 +87,19 @@ public class Game : MonoBehaviour {
             Debug.Log("Keyboard not detected!");
             return;
         }
+
         if (keyboard.pKey.wasPressedThisFrame) {
             board.ShowPaths = !board.ShowPaths;
         }
         else if (keyboard.gKey.wasPressedThisFrame) {
             board.ShowGrid = !board.ShowGrid;
+        }
+
+        if (keyboard.spaceKey.wasPressedThisFrame) {
+            Time.timeScale = Time.timeScale > pausedTimeScale ? pausedTimeScale : 1f;
+        }
+        else if (Time.timeScale > pausedTimeScale) {
+            Time.timeScale = playSpeed;
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {
@@ -99,6 +110,7 @@ public class Game : MonoBehaviour {
             selectedTowerType = TowerType.Mortar;
             Debug.Log("Selected tower type: " + selectedTowerType);
         }
+
         if (keyboard.bKey.wasPressedThisFrame) {
             BeginNewGame();
         }
