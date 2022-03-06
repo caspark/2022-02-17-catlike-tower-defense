@@ -73,7 +73,6 @@ public class GameBoard : MonoBehaviour {
                 tile.transform.SetParent(transform, false);
                 tile.transform.localPosition = new Vector3(x - offset.x, 0, y - offset.y);
                 tile.IsAlternative = (i & 1) == 0;
-                tile.Content = contentFactory.Get(GameTileContentType.Empty);
 
                 if (x > 0) {
                     GameTile.MakeEastWestNeighbors(tile, tiles[i - 1]);
@@ -87,15 +86,25 @@ public class GameBoard : MonoBehaviour {
             }
         }
 
-        ToggleDestination(tiles[tiles.Length / 2]);
-        ToggleSpawnPoint(tiles[0]);
-        ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
+        Clear();
     }
 
     public void GameUpdate() {
         for (int i = 0; i < updatingContent.Count; i++) {
             updatingContent[i].GameUpdate();
         }
+    }
+
+    public void Clear() {
+        foreach (GameTile tile in tiles) {
+            tile.Content = contentFactory.Get(GameTileContentType.Empty);
+        }
+        spawnPoints.Clear();
+        updatingContent.Clear();
+        ToggleDestination(tiles[tiles.Length / 2]);
+        ToggleSpawnPoint(tiles[0]);
+        ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
+        ToggleTower(tiles[size.x * 2 + 4], TowerType.Laser);
     }
 
     private bool FindPaths() {

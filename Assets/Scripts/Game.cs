@@ -86,6 +86,9 @@ public class Game : MonoBehaviour {
             selectedTowerType = TowerType.Mortar;
             Debug.Log("Selected tower type: " + selectedTowerType);
         }
+        if (keyboard.bKey.wasPressedThisFrame) {
+            BeginNewGame();
+        }
 
         activeScenario.Progress();
 
@@ -125,5 +128,13 @@ public class Game : MonoBehaviour {
                 board.ToggleSpawnPoint(tile);
             }
         }
+    }
+
+    void BeginNewGame() {
+        Debug.Log("Beginning new game");
+        enemies.Clear();
+        nonEnemies.Clear();
+        board.Clear();
+        activeScenario = scenario.Begin();
     }
 }

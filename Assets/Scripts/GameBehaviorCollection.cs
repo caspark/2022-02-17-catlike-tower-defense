@@ -19,4 +19,11 @@ public class GameBehaviorCollection {
             }
         }
     }
+
+    public void Clear() {
+        for (int i = 0; i < behaviors.Count; i++) {
+            behaviors[i].Recycle();
+        }
+        behaviors.Clear();
+    }
 }

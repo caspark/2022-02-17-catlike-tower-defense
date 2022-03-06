@@ -44,13 +44,13 @@ public class Enemy : GameBehavior {
     public override bool GameUpdate() {
         if (Health <= 0f) {
             Debug.Log("Enemy died!", this);
-            OriginFactory.Reclaim(this);
+            Recycle();
             return false;
         }
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             if (tileTo == null) {
-                OriginFactory.Reclaim(this);
+                Recycle();
                 return false;
             }
             progress = (progress - 1f) / progressFactor;
@@ -65,6 +65,10 @@ public class Enemy : GameBehavior {
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
         }
         return true;
+    }
+
+    public override void Recycle() {
+        OriginFactory.Reclaim(this);
     }
 
     internal void spawnOn(GameTile tile) {
