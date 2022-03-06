@@ -89,6 +89,7 @@ public class GameBoard : MonoBehaviour {
 
         ToggleDestination(tiles[tiles.Length / 2]);
         ToggleSpawnPoint(tiles[0]);
+        ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
     }
 
     public void GameUpdate() {
