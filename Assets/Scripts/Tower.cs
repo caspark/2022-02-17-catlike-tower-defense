@@ -3,27 +3,20 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public abstract class Tower : GameTileContent {
-    const int enemyLayerMask = 1 << 9;
-
-    static Collider[] targetsBuffer = new Collider[100];
-
     [SerializeField, Range(1.5f, 10.5f)]
     protected float targetingRange = 1.5f;
 
     public abstract TowerType TowerType { get; }
 
     protected bool AcquireTarget(out TargetPoint target) {
-        Vector3 a = transform.localPosition;
-        Vector3 b = a;
-        b.y += 3f;
-        int hits = Physics.OverlapCapsuleNonAlloc(a, b, targetingRange, targetsBuffer, enemyLayerMask);
-        if (hits > 0) {
-            target = targetsBuffer[Random.Range(0, hits)].GetComponent<TargetPoint>();
-            Debug.Assert(target != null, "Targeted non-enemy!", targetsBuffer[0]);
+        if (TargetPoint.FillBuffer(transform.localPosition, targetingRange)) {
+            target = TargetPoint.RandomBuffered;
             return true;
         }
-        target = null;
-        return false;
+        else {
+            target = null;
+            return false;
+        }
     }
 
     protected bool TrackTarget(ref TargetPoint target) {

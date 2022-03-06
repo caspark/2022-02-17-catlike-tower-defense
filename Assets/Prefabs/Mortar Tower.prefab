@@ -230,3 +230,6 @@ MonoBehaviour:
   targetingRange: 3.5
   shotsPerSecond: 1
   mortar: {fileID: 276532524036914438}
+  visualizeTrajectory: 0
+  shellBlastRadius: 1.5
+  shellDamage: 15

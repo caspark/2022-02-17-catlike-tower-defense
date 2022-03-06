@@ -8,6 +8,15 @@ public class MortarTower : Tower {
     [SerializeField]
     Transform mortar = default;
 
+    [SerializeField]
+    bool visualizeTrajectory = false;
+
+    [SerializeField, Range(0.5f, 3f)]
+    float shellBlastRadius = 1f;
+
+    [SerializeField, Range(1f, 100f)]
+    float shellDamage = 10f;
+
     public override TowerType TowerType => TowerType.Mortar;
 
     float launchSpeed;
@@ -63,24 +72,34 @@ public class MortarTower : Tower {
 
         mortar.localRotation = Quaternion.LookRotation(new Vector3(dir.x, tanTheta, dir.y));
 
-        float debugDrawDuration = 1f;
-        Vector3 prev = launchPoint;
-        Vector3 next;
-        for (int i = 1; i <= 10; i++) {
-            float t = i / 10f;
-            float dx = s * cosTheta * t;
-            float dy = s * sinTheta * t - 0.5f * g * t * t;
-            next = launchPoint + new Vector3(dir.x * dx, dy, dir.y * dx);
-            Debug.DrawLine(prev, next, Color.blue, debugDrawDuration);
-            prev = next;
+        if (visualizeTrajectory) {
+            float debugDrawDuration = 1f;
+            Vector3 prev = launchPoint;
+            Vector3 next;
+            for (int i = 1; i <= 10; i++) {
+                float t = i / 10f;
+                float dx = s * cosTheta * t;
+                float dy = s * sinTheta * t - 0.5f * g * t * t;
+                next = launchPoint + new Vector3(dir.x * dx, dy, dir.y * dx);
+                Debug.DrawLine(prev, next, Color.blue, debugDrawDuration);
+                prev = next;
+            }
+
+            Debug.DrawLine(launchPoint, targetPoint, Color.yellow, debugDrawDuration);
+            Debug.DrawLine(
+                new Vector3(launchPoint.x, 0.01f, launchPoint.z),
+                new Vector3(launchPoint.x + dir.x * x, 0.01f, launchPoint.z + dir.y * x),
+                Color.white,
+                debugDrawDuration
+            );
         }
 
-        Debug.DrawLine(launchPoint, targetPoint, Color.yellow, debugDrawDuration);
-        Debug.DrawLine(
-            new Vector3(launchPoint.x, 0.01f, launchPoint.z),
-            new Vector3(launchPoint.x + dir.x * x, 0.01f, launchPoint.z + dir.y * x),
-            Color.white,
-            debugDrawDuration
+        Game.SpawnShell().Initialize(
+            launchPoint,
+            targetPoint,
+            new Vector3(s * cosTheta * dir.x, s * sinTheta, s * cosTheta * dir.y),
+            shellBlastRadius,
+            shellDamage
         );
     }
 }
