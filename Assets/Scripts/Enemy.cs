@@ -28,12 +28,12 @@ public class Enemy : GameBehavior {
 
     private float Health;
 
-    public void Initialize(float scale, float speed, float pathOffset) {
+    public void Initialize(float scale, float speed, float pathOffset, float health) {
         model.localScale = new Vector3(scale, scale, scale);
         this.Scale = scale;
         this.speed = speed;
         this.pathOffset = pathOffset;
-        Health = 100f * scale;
+        this.Health = health;
     }
 
     public void ApplyDamage(float damage) {
