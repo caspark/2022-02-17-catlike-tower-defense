@@ -5,6 +5,8 @@ public class GameBehaviorCollection {
 
     List<GameBehavior> behaviors = new List<GameBehavior>();
 
+    public bool isEmpty => behaviors.Count == 0;
+
     public void Add(GameBehavior behavior) {
         behaviors.Add(behavior);
     }

@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d3a7d1689944e74bb2ad580b1addc52, type: 3}
-  m_Name: Game Scenario
+  m_Script: {fileID: 11500000, guid: 077336e9715d6084d96d324a94090577, type: 3}
+  m_Name: Wave-SingleSphere
   m_EditorClassIdentifier: 
-  waves:
-  - {fileID: 11400000, guid: b71fe26eb4ecf994d8f09752572930fc, type: 2}
-  - {fileID: 11400000, guid: 70d7c50d4aed2c147be6f7a7c9aad65f, type: 2}
+  spawnSequences:
+  - factory: {fileID: 11400000, guid: 6091075e9d0e48a4e95caafd0af0c22e, type: 2}
+    type: 1
+    amount: 1
+    cooldown: 1

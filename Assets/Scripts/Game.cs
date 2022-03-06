@@ -108,7 +108,11 @@ public class Game : MonoBehaviour {
             BeginNewGame();
         }
 
-        activeScenario.Progress();
+        if (!activeScenario.Progress() && enemies.isEmpty) {
+            Debug.Log("Victory!");
+            BeginNewGame();
+            activeScenario.Progress();
+        }
 
         enemies.GameUpdate();
         Physics.SyncTransforms();

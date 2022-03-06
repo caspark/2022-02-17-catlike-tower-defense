@@ -19,14 +19,14 @@ MonoBehaviour:
       min: 0.5
       max: 0.5
     speed:
-      min: 2
-      max: 2
+      min: 3
+      max: 3
     health:
-      min: 50
-      max: 50
+      min: 25
+      max: 25
     pathOffset:
-      min: 0
-      max: 0
+      min: -0.4
+      max: 0.4
   medium:
     prefab: {fileID: 5064112077295112490, guid: 1cabbbc6030048a49a271745024f693c,
       type: 3}
@@ -40,8 +40,8 @@ MonoBehaviour:
       min: 100
       max: 100
     pathOffset:
-      min: 0
-      max: 0
+      min: -0.25
+      max: 0.25
   large:
     prefab: {fileID: 5064112077295112490, guid: 98f14bd677282ae4e8a3b1fe1814b589,
       type: 3}
