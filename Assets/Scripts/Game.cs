@@ -30,6 +30,12 @@ public class Game : MonoBehaviour {
         return shell;
     }
 
+    public static Explosion SpawnExplosion() {
+        Explosion explosion = instance.warFactory.Explosion;
+        instance.nonEnemies.Add(explosion);
+        return explosion;
+    }
+
     private void OnEnable() {
         instance = this;
     }

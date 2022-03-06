@@ -6,6 +6,11 @@ public class WarFactory : GameObjectFactory {
     [SerializeField]
     Shell shellPrefab = default;
 
+    [SerializeField]
+    Explosion explosionPrefab = default;
+
+    public Explosion Explosion => Get(explosionPrefab);
+
     public Shell Shell => Get(shellPrefab);
 
     T Get<T>(T prefab) where T : WarEntity {
