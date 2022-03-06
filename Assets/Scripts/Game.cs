@@ -12,16 +12,14 @@ public class Game : MonoBehaviour {
 
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
     [SerializeField] private WarFactory warFactory = default;
-    [SerializeField] private EnemyFactory enemyFactory = default;
-    [SerializeField, Range(0.0f, 10f)] private float spawnSpeed = 1f;
+    [SerializeField] private GameScenario scenario = default;
+    GameScenario.State activeScenario;
 
     static Game instance;
 
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
-    float spawnProgress;
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
-
     TowerType selectedTowerType;
 
     public static Shell SpawnShell() {
@@ -52,6 +50,7 @@ public class Game : MonoBehaviour {
     private void Awake() {
         board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
+        activeScenario = scenario.Begin();
     }
 
     private void Update() {
@@ -78,9 +77,6 @@ public class Game : MonoBehaviour {
         else if (keyboard.gKey.wasPressedThisFrame) {
             board.ShowGrid = !board.ShowGrid;
         }
-        else if (keyboard.eKey.wasPressedThisFrame) {
-            spawnProgress += 1;
-        }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {
             selectedTowerType = TowerType.Laser;
@@ -91,22 +87,21 @@ public class Game : MonoBehaviour {
             Debug.Log("Selected tower type: " + selectedTowerType);
         }
 
-        spawnProgress += spawnSpeed * Time.deltaTime;
-        while (spawnProgress >= 1f) {
-            spawnProgress -= 1f;
-            SpawnEnemy();
-        }
+        activeScenario.Progress();
+
         enemies.GameUpdate();
         Physics.SyncTransforms();
         board.GameUpdate();
         nonEnemies.GameUpdate();
     }
 
-    private void SpawnEnemy() {
-        GameTile spawnPoint = board.GetSpawnPoint(Random.Range(0, board.SpawnPointCount));
-        Enemy enemy = enemyFactory.Get((EnemyType)Random.Range(0, 3));
-        enemies.Add(enemy);
+    public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
+        GameTile spawnPoint = instance.board.GetSpawnPoint(
+            Random.Range(0, instance.board.SpawnPointCount)
+        );
+        Enemy enemy = factory.Get(type);
         enemy.spawnOn(spawnPoint);
+        instance.enemies.Add(enemy);
     }
 
     private void HandleTouch() {
