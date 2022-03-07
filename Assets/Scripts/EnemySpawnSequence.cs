@@ -1,6 +1,7 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-[System.Serializable]
+[System.Serializable, InlineEditor(InlineEditorModes.GUIAndHeader)]
 public class EnemySpawnSequence {
 
     [SerializeField]

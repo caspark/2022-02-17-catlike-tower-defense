@@ -1,6 +1,7 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu, InlineEditor(InlineEditorModes.GUIAndHeader)]
 public class GameScenario : ScriptableObject {
 
     [SerializeField]

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
@@ -24,8 +25,8 @@ public class Game : MonoBehaviour {
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
-    TowerType selectedTowerType;
-    int playerHealth;
+    [ShowInInspector] TowerType selectedTowerType;
+    [ShowInInspector] int playerHealth;
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
