@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
@@ -16,17 +18,19 @@ public class Game : MonoBehaviour {
     [SerializeField] private GameScenario scenario = default;
     [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
     [SerializeField] private float playSpeed = 1f;
+    [SerializeField] private UIDocument uiDocument = default;
 
     const float pausedTimeScale = 0.01f;
 
     static Game instance;
-
     GameScenario.State activeScenario;
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
     [ShowInInspector] TowerType selectedTowerType;
     [ShowInInspector] int playerHealth;
+
+    VisualElement uiTowerSelectContainer;
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
@@ -58,6 +62,21 @@ public class Game : MonoBehaviour {
         board.ShowGrid = true;
         activeScenario = scenario.Begin();
         playerHealth = startingPlayerHealth;
+
+        // Init UI
+        Debug.Assert(uiDocument != null, "UI Document must be set!");
+        VisualElement uiRoot = uiDocument.rootVisualElement;
+        uiRoot.Query<Button>(className: "buildButton")
+            .Build()
+            .ForEachWithIndex((button, i) => {
+                button.clickable.clicked += () => {
+                    SelectTowerType((TowerType)i);
+                };
+            });
+        uiTowerSelectContainer = uiRoot.Q<VisualElement>("TowerSelectContainer");
+
+        // Init UI state
+        SelectTowerType(TowerType.Laser);
     }
 
     void BeginNewGame() {
@@ -104,12 +123,10 @@ public class Game : MonoBehaviour {
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {
-            selectedTowerType = TowerType.Laser;
-            Debug.Log("Selected tower type: " + selectedTowerType);
+            SelectTowerType(TowerType.Laser);
         }
         else if (keyboard.digit2Key.wasPressedThisFrame) {
-            selectedTowerType = TowerType.Mortar;
-            Debug.Log("Selected tower type: " + selectedTowerType);
+            SelectTowerType(TowerType.Mortar);
         }
 
         if (keyboard.bKey.wasPressedThisFrame) {
@@ -131,6 +148,20 @@ public class Game : MonoBehaviour {
         Physics.SyncTransforms();
         board.GameUpdate();
         nonEnemies.GameUpdate();
+    }
+
+    private void SelectTowerType(TowerType type) {
+        selectedTowerType = type;
+        Debug.Log("Selected tower type: " + selectedTowerType);
+
+        uiTowerSelectContainer.Query<Button>().Build().ForEachWithIndex((child, i) => {
+            if (i == (int)type) {
+                child.AddToClassList("selected");
+            }
+            else {
+                child.RemoveFromClassList("selected");
+            }
+        });
     }
 
     public static void SpawnEnemy(EnemyFactory factory, EnemyType type) {
