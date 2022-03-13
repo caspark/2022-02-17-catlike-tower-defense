@@ -1,3 +1,4 @@
+using System.Text;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -51,6 +52,23 @@ public class GameScenario : ScriptableObject {
                 deltaTime = wave.Progress(deltaTime);
             }
             return true;
+        }
+
+        public string GetProgressString() {
+            StringBuilder sb = new StringBuilder();
+
+            wave.AddProgressString(sb);
+            if (scenario.cycles == -1) {
+                sb.Append(" (Infinite)");
+            }
+            else if (scenario.cycles != 1) {
+                sb.Append(" (Cycle ");
+                sb.Append(cycle + 1);
+                sb.Append(" / ");
+                sb.Append(scenario.cycles);
+                sb.Append(")");
+            }
+            return sb.ToString();
         }
     }
 }

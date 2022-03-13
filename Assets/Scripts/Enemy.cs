@@ -43,7 +43,7 @@ public class Enemy : GameBehavior {
 
     public override bool GameUpdate() {
         if (Health <= 0f) {
-            Debug.Log("Enemy died!", this);
+            Game.EnemyDied(this);
             Recycle();
             return false;
         }

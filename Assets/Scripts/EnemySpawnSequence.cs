@@ -42,5 +42,9 @@ public class EnemySpawnSequence {
             }
             return -1f;
         }
+
+        public string GetProgressString() {
+            return $"{count} / {sequence.amount}";
+        }
     }
 }

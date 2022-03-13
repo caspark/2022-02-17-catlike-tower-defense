@@ -39,5 +39,12 @@ public class EnemyWave : ScriptableObject {
             }
             return -1f;
         }
+
+        public void AddProgressString(System.Text.StringBuilder sb) {
+            sb.Append("Wave ");
+            sb.Append(index + 1);
+            sb.Append(" / ");
+            sb.Append(wave.spawnSequences.Length);
+        }
     }
 }

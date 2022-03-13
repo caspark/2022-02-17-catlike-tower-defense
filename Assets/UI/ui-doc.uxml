@@ -9,10 +9,11 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="Middle">
-                <ui:Label text="Enemies: TODO" name="EnemyCount" />
+                <ui:Label text="Wave Progress" name="Wave" />
             </ui:VisualElement>
             <ui:VisualElement name="Right">
-                <ui:Label text="Lives left: TODO" name="Lives" />
+                <ui:Label text="Lives: ..." name="Lives" />
+                <ui:Label text="Kills: ..." name="Kills" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

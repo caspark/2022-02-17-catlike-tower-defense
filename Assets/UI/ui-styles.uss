@@ -12,6 +12,7 @@
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     background-color: rgba(95, 155, 181, 255);
+    font-size: 24px;
 }
 
 .buildButton:active {
@@ -32,4 +33,9 @@
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
     background-color: rgba(119, 212, 165, 255);
+}
+
+Label {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 255);
 }

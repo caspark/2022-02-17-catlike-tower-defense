@@ -31,6 +31,7 @@ public class Game : MonoBehaviour {
     [ShowInInspector] int playerHealth;
 
     VisualElement uiTowerSelectContainer;
+    private int killCount;
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
@@ -76,6 +77,7 @@ public class Game : MonoBehaviour {
         uiTowerSelectContainer = uiRoot.Q<VisualElement>("TowerSelectContainer");
 
         // Init UI state
+        UpdateAllUI();
         SelectTowerType(TowerType.Laser);
     }
 
@@ -86,8 +88,10 @@ public class Game : MonoBehaviour {
         board.Clear();
         activeScenario = scenario.Begin();
         playerHealth = startingPlayerHealth;
-    }
+        killCount = 0;
 
+        UpdateAllUI();
+    }
 
     private void Update() {
         Mouse mouse = Mouse.current;
@@ -171,10 +175,37 @@ public class Game : MonoBehaviour {
         Enemy enemy = factory.Get(type);
         enemy.spawnOn(spawnPoint);
         instance.enemies.Add(enemy);
+
+        instance.UpdateWaveUI();
+    }
+
+    public static void EnemyDied(Enemy enemy) {
+        Debug.Log("Enemy died!", enemy);
+        instance.killCount += 1;
+        instance.UpdateKillsUI();
     }
 
     public static void EnemyReachedDestination() {
         instance.playerHealth -= 1;
+        instance.UpdatePlayerHealthUI();
+    }
+
+    private void UpdateAllUI() {
+        UpdatePlayerHealthUI();
+        UpdateWaveUI();
+        UpdateKillsUI();
+    }
+
+    private void UpdatePlayerHealthUI() {
+        uiDocument.rootVisualElement.Q<Label>("Lives").text = $"{playerHealth} / {startingPlayerHealth} lives";
+    }
+
+    private void UpdateWaveUI() {
+        uiDocument.rootVisualElement.Q<Label>("Wave").text = activeScenario.GetProgressString();
+    }
+
+    private void UpdateKillsUI() {
+        uiDocument.rootVisualElement.Q<Label>("Kills").text = killCount != 1 ? $"{killCount} kills" : "1 kill";
     }
 
     private void HandleTouch() {
@@ -188,6 +219,7 @@ public class Game : MonoBehaviour {
             }
         }
     }
+
     private void HandleAlternativeTouch() {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
