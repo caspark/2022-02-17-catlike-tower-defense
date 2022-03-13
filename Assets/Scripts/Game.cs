@@ -75,6 +75,16 @@ public class Game : MonoBehaviour {
                 };
             });
         uiTowerSelectContainer = uiRoot.Q<VisualElement>("TowerSelectContainer");
+        Label kills = uiRoot.Query<Label>("Kills");
+        kills.RegisterCallback<TransitionEndEvent>(e => {
+            kills.RemoveFromClassList("kill-inc-in");
+            kills.AddToClassList("kill-inc-out");
+        });
+        Label lives = uiRoot.Query<Label>("Lives");
+        lives.RegisterCallback<TransitionEndEvent>(e => {
+            lives.RemoveFromClassList("life-inc-in");
+            lives.AddToClassList("life-inc-out");
+        });
 
         // Init UI state
         UpdateAllUI();
@@ -183,11 +193,19 @@ public class Game : MonoBehaviour {
         Debug.Log("Enemy died!", enemy);
         instance.killCount += 1;
         instance.UpdateKillsUI();
+
+        Label kills = instance.uiDocument.rootVisualElement.Q<Label>("Kills");
+        kills.RemoveFromClassList("kill-inc-out");
+        kills.AddToClassList("kill-inc-in");
     }
 
     public static void EnemyReachedDestination() {
         instance.playerHealth -= 1;
         instance.UpdatePlayerHealthUI();
+
+        Label lives = instance.uiDocument.rootVisualElement.Q<Label>("Lives");
+        lives.RemoveFromClassList("life-inc-out");
+        lives.AddToClassList("life-inc-in");
     }
 
     private void UpdateAllUI() {
