@@ -17,14 +17,20 @@ public class MortarTower : Tower {
     [SerializeField, Range(1f, 100f)]
     float shellDamage = 10f;
 
+    [SerializeField]
+    AudioClip[] fireSounds = default;
+
     public override TowerType TowerType => TowerType.Mortar;
 
     float launchSpeed;
 
     float launchProgress;
+    private AudioSource audioSource;
 
     void Awake() {
         OnValidate();
+        audioSource = GetComponent<AudioSource>();
+        Debug.Assert(audioSource != null, "No audio source found!");
     }
 
     void OnValidate() {
@@ -93,6 +99,8 @@ public class MortarTower : Tower {
                 debugDrawDuration
             );
         }
+
+        audioSource.PlayOneShot(fireSounds[Random.Range(0, fireSounds.Length)]);
 
         Game.SpawnShell().Initialize(
             launchPoint,

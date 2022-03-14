@@ -29,9 +29,15 @@ public class Game : MonoBehaviour {
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
     [ShowInInspector] TowerType selectedTowerType;
     [ShowInInspector] int playerHealth;
-
+    private AudioSource audioSource;
     VisualElement uiTowerSelectContainer;
     private int killCount;
+
+    [SerializeField]
+    private AudioClip loseLife;
+
+    [SerializeField]
+    private AudioClip[] enemyDeath;
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
@@ -63,6 +69,9 @@ public class Game : MonoBehaviour {
         board.ShowGrid = true;
         activeScenario = scenario.Begin();
         playerHealth = startingPlayerHealth;
+
+        audioSource = GetComponent<AudioSource>();
+        Debug.Assert(audioSource != null, "No audio source found!");
 
         // Init UI
         Debug.Assert(uiDocument != null, "UI Document must be set!");
@@ -197,6 +206,8 @@ public class Game : MonoBehaviour {
         Label kills = instance.uiDocument.rootVisualElement.Q<Label>("Kills");
         kills.RemoveFromClassList("kill-inc-out");
         kills.AddToClassList("kill-inc-in");
+
+        instance.audioSource.PlayOneShot(instance.enemyDeath[Random.Range(0, instance.enemyDeath.Length)]);
     }
 
     public static void EnemyReachedDestination() {
@@ -206,6 +217,8 @@ public class Game : MonoBehaviour {
         Label lives = instance.uiDocument.rootVisualElement.Q<Label>("Lives");
         lives.RemoveFromClassList("life-inc-out");
         lives.AddToClassList("life-inc-in");
+
+        instance.audioSource.PlayOneShot(instance.loseLife);
     }
 
     private void UpdateAllUI() {
