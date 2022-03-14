@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraMoveSpeed: 10
-  cameraRotateSpeed: 10
+  cameraRotateSpeed: 20
   cameraZoomSpeed: 0.5
   cameraZoomRange:
     min: 1
