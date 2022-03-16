@@ -7,6 +7,8 @@ public class EnemyFactory : GameObjectFactory {
     class EnemyConfig {
         public Enemy prefab = default;
 
+        public ParticleSystem DeathEffectPrefab = default;
+
         [FloatRangeSlider(0.5f, 2f)]
         public FloatRange scale = new FloatRange(1f);
 
@@ -40,7 +42,8 @@ public class EnemyFactory : GameObjectFactory {
         instance.Initialize(config.scale.RandomValueInRange,
                     config.speed.RandomValueInRange,
                     config.pathOffset.RandomValueInRange,
-                    config.health.RandomValueInRange);
+                    config.health.RandomValueInRange,
+                    config.DeathEffectPrefab);
         return instance;
     }
 

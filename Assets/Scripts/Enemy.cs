@@ -27,13 +27,15 @@ public class Enemy : GameBehavior {
     private float pathOffset;
 
     private float Health;
+    private ParticleSystem deathEffectPrefab;
 
-    public void Initialize(float scale, float speed, float pathOffset, float health) {
+    public void Initialize(float scale, float speed, float pathOffset, float health, ParticleSystem deathEffectPrefab) {
         model.localScale = new Vector3(scale, scale, scale);
         this.Scale = scale;
         this.speed = speed;
         this.pathOffset = pathOffset;
         this.Health = health;
+        this.deathEffectPrefab = deathEffectPrefab;
     }
 
     public void ApplyDamage(float damage) {
@@ -44,6 +46,12 @@ public class Enemy : GameBehavior {
     public override bool GameUpdate() {
         if (Health <= 0f) {
             Game.EnemyDied(this);
+            ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition, Quaternion.identity);
+            deathSystem.transform.localScale = this.Scale * Vector3.one;
+            ParticleSystem.EmissionModule emission = deathSystem.emission;
+            emission.rateOverTime = this.Scale * emission.rateOverTimeMultiplier;
+            deathSystem.GetComponent<ParticleSystem>();
+            deathSystem.GetComponent<ParticleSystemRenderer>().material.color = model.gameObject.GetComponentsInChildren<Renderer>()[0].material.color;
             Recycle();
             return false;
         }

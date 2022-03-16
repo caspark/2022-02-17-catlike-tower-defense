@@ -15,6 +15,8 @@ MonoBehaviour:
   small:
     prefab: {fileID: 5064112077295112490, guid: 9ab3ab6121c2b7641b509a08ac3bdea0,
       type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
+      type: 3}
     scale:
       min: 0.5
       max: 0.5
@@ -30,6 +32,8 @@ MonoBehaviour:
   medium:
     prefab: {fileID: 5064112077295112490, guid: 976e68e0cc5b7834cbffd971c9c1ff43,
       type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
+      type: 3}
     scale:
       min: 1
       max: 1
@@ -44,6 +48,8 @@ MonoBehaviour:
       max: 0.25
   large:
     prefab: {fileID: 5064112077295112490, guid: 96cf559f193811349a140f9f8517abfe,
+      type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
       type: 3}
     scale:
       min: 1.5
