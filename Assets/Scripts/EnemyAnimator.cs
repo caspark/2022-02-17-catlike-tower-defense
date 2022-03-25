@@ -16,7 +16,8 @@ public struct EnemyAnimator {
         output.SetSourcePlayable(clip);
     }
 
-    public void Play() {
+    public void Play(float speed) {
+        graph.GetOutput(0).GetSourcePlayable().SetSpeed(speed);
         graph.Play();
     }
 

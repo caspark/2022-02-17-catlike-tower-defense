@@ -46,7 +46,7 @@ public class Enemy : GameBehavior {
         this.pathOffset = pathOffset;
         this.Health = health;
         this.deathEffectPrefab = deathEffectPrefab;
-        animator.Play();
+        animator.Play(speed);
     }
 
     public void ApplyDamage(float damage) {
