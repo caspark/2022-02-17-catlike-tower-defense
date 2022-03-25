@@ -5,6 +5,8 @@ public class Enemy : GameBehavior {
 
     [SerializeField] Transform model = default;
 
+    [SerializeField] EnemyAnimationConfig animationConfig = default;
+
     private EnemyFactory originFactory;
 
     public EnemyFactory OriginFactory {
@@ -28,6 +30,14 @@ public class Enemy : GameBehavior {
 
     private float Health;
     private ParticleSystem deathEffectPrefab;
+    private EnemyAnimator animator;
+
+    private void Awake() {
+        animator.Configure(
+            model.GetChild(0).gameObject.AddComponent<Animator>(),
+            animationConfig
+        );
+    }
 
     public void Initialize(float scale, float speed, float pathOffset, float health, ParticleSystem deathEffectPrefab) {
         model.localScale = new Vector3(scale, scale, scale);
@@ -36,6 +46,7 @@ public class Enemy : GameBehavior {
         this.pathOffset = pathOffset;
         this.Health = health;
         this.deathEffectPrefab = deathEffectPrefab;
+        animator.Play();
     }
 
     public void ApplyDamage(float damage) {
@@ -78,6 +89,7 @@ public class Enemy : GameBehavior {
 
     public override void Recycle() {
         OriginFactory.Reclaim(this);
+        animator.Stop();
     }
 
     internal void spawnOn(GameTile tile) {

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu(fileName = "GameTileContentFactory", menuName = "Catlike TD/GameTileContentFactory", order = 0)]
+[CreateAssetMenu(fileName = "GameTileContentFactory")]
 public class GameTileContentFactory : GameObjectFactory {
     [SerializeField] private GameTileContent destinationPrefab = default;
     [SerializeField] private GameTileContent emptyPrefab = default;
