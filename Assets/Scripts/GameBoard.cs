@@ -103,8 +103,8 @@ public class GameBoard : MonoBehaviour {
         updatingContent.Clear();
         ToggleDestination(tiles[tiles.Length / 2]);
         ToggleSpawnPoint(tiles[0]);
-        ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
-        ToggleTower(tiles[size.x * 2 + 4], TowerType.Laser);
+        // ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
+        // ToggleTower(tiles[size.x * 2 + 4], TowerType.Laser);
     }
 
     private bool FindPaths() {

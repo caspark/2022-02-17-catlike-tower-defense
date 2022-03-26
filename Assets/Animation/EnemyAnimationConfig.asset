@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: EnemyAnimationConfig
   m_EditorClassIdentifier: 
   move: {fileID: 7400000, guid: 9106a33f4852b4c44aa0d0f072dc1b96, type: 2}
+  intro: {fileID: 7400000, guid: bd2bc6a80db5eeb4ea54e59424800941, type: 2}
+  outro: {fileID: 7400000, guid: 38287d20e35bd4e4eb08b90fb95d8a20, type: 2}

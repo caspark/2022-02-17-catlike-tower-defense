@@ -46,7 +46,7 @@ public class Enemy : GameBehavior {
         this.pathOffset = pathOffset;
         this.Health = health;
         this.deathEffectPrefab = deathEffectPrefab;
-        animator.Play(speed);
+        animator.PlayIntro();
     }
 
     private void OnDestroy() {
@@ -59,6 +59,21 @@ public class Enemy : GameBehavior {
     }
 
     public override bool GameUpdate() {
+        if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
+            if (!animator.IsDone) {
+                return true;
+            }
+            animator.PlayMove(speed / Scale);
+        }
+        else if (animator.CurrentClip == EnemyAnimator.Clip.Outro) {
+            Debug.Log("Outro tick");
+            if (animator.IsDone) {
+                Debug.Log("Outro done");
+                Recycle();
+                return false;
+            }
+            return true;
+        }
         if (Health <= 0f) {
             Game.EnemyDied(this);
             ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition, Quaternion.identity);
@@ -74,8 +89,8 @@ public class Enemy : GameBehavior {
         while (progress >= 1f) {
             if (tileTo == null) {
                 Game.EnemyReachedDestination();
-                Recycle();
-                return false;
+                animator.PlayOutro();
+                return true;
             }
             progress = (progress - 1f) / progressFactor;
             PrepareNextState();
@@ -106,6 +121,7 @@ public class Enemy : GameBehavior {
 
     void PrepareIntro() {
         positionFrom = tileFrom.transform.localPosition;
+        transform.localPosition = positionFrom;
         positionTo = tileFrom.ExitPoint;
         direction = tileFrom.PathDirection;
         directionChange = DirectionChange.None;
