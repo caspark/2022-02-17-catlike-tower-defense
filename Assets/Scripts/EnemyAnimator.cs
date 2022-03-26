@@ -22,6 +22,10 @@ public struct EnemyAnimator {
     }
 
     public void Stop() {
+        graph.Stop();
+    }
+
+    public void Destroy() {
         graph.Destroy();
     }
 }

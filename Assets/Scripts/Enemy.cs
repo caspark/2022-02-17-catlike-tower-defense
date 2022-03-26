@@ -49,6 +49,10 @@ public class Enemy : GameBehavior {
         animator.Play(speed);
     }
 
+    private void OnDestroy() {
+        animator.Destroy();
+    }
+
     public void ApplyDamage(float damage) {
         Debug.Assert(damage >= 0f, "Negative damage applied!");
         Health -= damage;
