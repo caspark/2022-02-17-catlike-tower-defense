@@ -105,7 +105,7 @@ public class Enemy : GameBehavior {
     }
 
     private void SpawnDeathParticleSystem() {
-        ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition, Quaternion.identity);
+        ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition + model.localPosition, Quaternion.identity);
         deathSystem.transform.localScale = this.Scale * Vector3.one;
         ParticleSystem.EmissionModule emission = deathSystem.emission;
         emission.rateOverTime = this.Scale * emission.rateOverTimeMultiplier;
