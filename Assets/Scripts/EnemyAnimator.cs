@@ -13,6 +13,37 @@ public struct EnemyAnimator {
 
     public bool IsDone => GetPlayable(CurrentClip).IsDone();
 
+    private Clip previousClip;
+
+    private float transitionProgress;
+
+    const float transitionSpeed = 5f;
+
+    void BeginTransition(Clip nextClip) {
+        previousClip = CurrentClip;
+        CurrentClip = nextClip;
+        transitionProgress = 0f;
+        GetPlayable(nextClip).Play();
+    }
+
+    public void GameUpdate() {
+        if (transitionProgress >= 0f) {
+
+            transitionProgress += Time.deltaTime * transitionSpeed;
+            if (transitionProgress >= 1f) {
+                transitionProgress = -1f;
+                SetWeight(CurrentClip, 1f);
+                SetWeight(previousClip, 0f);
+                GetPlayable(previousClip).Pause();
+            }
+            else {
+                SetWeight(CurrentClip, transitionProgress);
+                SetWeight(previousClip, 1f - transitionProgress);
+            }
+        }
+    }
+
+
     public void Configure(Animator animator, EnemyAnimationConfig config) {
         graph = PlayableGraph.Create();
         graph.SetTimeUpdateMode(DirectorUpdateMode.GameTime);
@@ -39,22 +70,16 @@ public struct EnemyAnimator {
         SetWeight(Clip.Intro, 1f);
         CurrentClip = Clip.Intro;
         graph.Play();
+        transitionProgress = -1f;
     }
 
     public void PlayMove(float speed) {
-        SetWeight(CurrentClip, 0f);
-        SetWeight(Clip.Move, 1f);
-        Playable clip = GetPlayable(Clip.Move);
-        clip.SetSpeed(speed);
-        clip.Play();
-        CurrentClip = Clip.Move;
+        GetPlayable(Clip.Move).SetSpeed(speed);
+        BeginTransition(Clip.Move);
     }
 
     public void PlayOutro() {
-        SetWeight(CurrentClip, 0f);
-        SetWeight(Clip.Outro, 1f);
-        GetPlayable(Clip.Outro).Play();
-        CurrentClip = Clip.Outro;
+        BeginTransition(Clip.Outro);
     }
 
     private Playable GetPlayable(Clip clip) {

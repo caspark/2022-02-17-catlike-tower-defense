@@ -59,6 +59,7 @@ public class Enemy : GameBehavior {
     }
 
     public override bool GameUpdate() {
+        animator.GameUpdate();
         if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
             if (!animator.IsDone) {
                 return true;
