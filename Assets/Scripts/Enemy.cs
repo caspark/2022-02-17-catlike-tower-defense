@@ -66,26 +66,23 @@ public class Enemy : GameBehavior {
             }
             animator.PlayMove(speed / Scale);
         }
-        else if (animator.CurrentClip == EnemyAnimator.Clip.Outro) {
-            Debug.Log("Outro tick");
+        else if (animator.CurrentClip == EnemyAnimator.Clip.Outro
+                || animator.CurrentClip == EnemyAnimator.Clip.Dying) {
             if (animator.IsDone) {
-                Debug.Log("Outro done");
+                if (animator.CurrentClip == EnemyAnimator.Clip.Dying) {
+                    Game.EnemyDied(this);
+                }
                 Recycle();
                 return false;
             }
             return true;
         }
         if (Health <= 0f) {
-            Game.EnemyDied(this);
-            ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition, Quaternion.identity);
-            deathSystem.transform.localScale = this.Scale * Vector3.one;
-            ParticleSystem.EmissionModule emission = deathSystem.emission;
-            emission.rateOverTime = this.Scale * emission.rateOverTimeMultiplier;
-            deathSystem.GetComponent<ParticleSystem>();
-            deathSystem.GetComponent<ParticleSystemRenderer>().material.color = model.gameObject.GetComponentsInChildren<Renderer>()[0].material.color;
-            Recycle();
-            return false;
+            SpawnDeathParticleSystem();
+            animator.PlayDying();
+            return true;
         }
+
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             if (tileTo == null) {
@@ -105,6 +102,15 @@ public class Enemy : GameBehavior {
             transform.localRotation = Quaternion.Euler(0f, angle, 0f);
         }
         return true;
+    }
+
+    private void SpawnDeathParticleSystem() {
+        ParticleSystem deathSystem = Instantiate(deathEffectPrefab, transform.localPosition, Quaternion.identity);
+        deathSystem.transform.localScale = this.Scale * Vector3.one;
+        ParticleSystem.EmissionModule emission = deathSystem.emission;
+        emission.rateOverTime = this.Scale * emission.rateOverTimeMultiplier;
+        deathSystem.GetComponent<ParticleSystem>();
+        deathSystem.GetComponent<ParticleSystemRenderer>().material.color = model.gameObject.GetComponentsInChildren<Renderer>()[0].material.color;
     }
 
     public override void Recycle() {
