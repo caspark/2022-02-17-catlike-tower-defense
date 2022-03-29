@@ -31,5 +31,7 @@ public class TargetPoint : MonoBehaviour {
         Debug.Assert(Enemy != null, "TargetPoint is not child of Enemy!", this);
         Debug.Assert(GetComponent<SphereCollider>() != null, "TargetPoint needs a sphere collider!", this);
         Debug.Assert(gameObject.layer == 9, "TargetPoint should be in layer 9!", this);
+
+        Enemy.TargetPointCollider = GetComponent<Collider>();
     }
 }

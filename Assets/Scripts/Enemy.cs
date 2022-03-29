@@ -32,6 +32,17 @@ public class Enemy : GameBehavior {
     private ParticleSystem deathEffectPrefab;
     private EnemyAnimator animator;
 
+    private Collider targetPointCollider;
+
+    public Collider TargetPointCollider {
+        set {
+            Debug.Assert(targetPointCollider == null, "Redefined target point collider!");
+            targetPointCollider = value;
+        }
+    }
+
+    public bool IsValidTarget => animator.CurrentClip == EnemyAnimator.Clip.Move;
+
     private void Awake() {
         animator.Configure(
             model.GetChild(0).gameObject.AddComponent<Animator>(),
@@ -47,6 +58,7 @@ public class Enemy : GameBehavior {
         this.Health = health;
         this.deathEffectPrefab = deathEffectPrefab;
         animator.PlayIntro();
+        targetPointCollider.enabled = false;
     }
 
     private void OnDestroy() {
@@ -65,6 +77,7 @@ public class Enemy : GameBehavior {
                 return true;
             }
             animator.PlayMove(speed / Scale);
+            targetPointCollider.enabled = true;
         }
         else if (animator.CurrentClip == EnemyAnimator.Clip.Outro
                 || animator.CurrentClip == EnemyAnimator.Clip.Dying) {
@@ -80,6 +93,7 @@ public class Enemy : GameBehavior {
         if (Health <= 0f) {
             SpawnDeathParticleSystem();
             animator.PlayDying();
+            targetPointCollider.enabled = false;
             return true;
         }
 
@@ -88,6 +102,7 @@ public class Enemy : GameBehavior {
             if (tileTo == null) {
                 Game.EnemyReachedDestination();
                 animator.PlayOutro();
+                targetPointCollider.enabled = false;
                 return true;
             }
             progress = (progress - 1f) / progressFactor;
