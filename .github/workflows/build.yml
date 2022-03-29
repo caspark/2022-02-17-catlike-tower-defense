@@ -1,6 +1,8 @@
 ﻿name: Build
 
-on: push
+# change to "push" to build each commit
+# (seems to eat through LFS data quota like there's no tomorrow)
+on: workflow_dispatch
 
 env:
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -11,7 +13,7 @@ jobs:
     uses: ./.github/workflows/versioner.yml
     with:
       type: dev
-      
+
   build:
     needs: version
     uses: ./.github/workflows/builder.yml
