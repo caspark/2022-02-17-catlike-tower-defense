@@ -638,8 +638,8 @@ MonoBehaviour:
   uiDocument: {fileID: 250009561}
   loseLife: {fileID: 8300000, guid: a0e2c6648fe02f7468701d36659aee14, type: 3}
   enemyDeath:
-  - {fileID: 8300000, guid: 960d7eb7fa86342409d4871a286caf4f, type: 3}
-  - {fileID: 8300000, guid: 95b224637a270d7428dc08a301ea8a9d, type: 3}
+  - {fileID: 8300000, guid: 21f22b9feda76f342b69d93e9d4da438, type: 3}
+  - {fileID: 8300000, guid: 9a0fbc6756236e64abdf1d093d51062d, type: 3}
 --- !u!4 &674280193
 Transform:
   m_ObjectHideFlags: 0

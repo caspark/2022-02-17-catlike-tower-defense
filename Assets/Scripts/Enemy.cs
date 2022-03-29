@@ -82,15 +82,13 @@ public class Enemy : GameBehavior {
         else if (animator.CurrentClip == EnemyAnimator.Clip.Outro
                 || animator.CurrentClip == EnemyAnimator.Clip.Dying) {
             if (animator.IsDone) {
-                if (animator.CurrentClip == EnemyAnimator.Clip.Dying) {
-                    Game.EnemyDied(this);
-                }
                 Recycle();
                 return false;
             }
             return true;
         }
         if (Health <= 0f) {
+            Game.EnemyDied(this);
             SpawnDeathParticleSystem();
             animator.PlayDying();
             targetPointCollider.enabled = false;
