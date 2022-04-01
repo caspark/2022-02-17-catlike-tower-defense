@@ -30,9 +30,19 @@ public class Enemy : GameBehavior {
 
     private float Health;
     private ParticleSystem deathEffectPrefab;
-    private EnemyAnimator animator;
+    private EnemyAnimator customAnimator;
 
     private Collider targetPointCollider;
+
+    //FIXME this should be configurable per prefab (and ideally not cause duplicating all the state transition logic)
+    const bool useCustomAnimator = false;
+
+    private Animator builtinAnimator;
+
+    private static int animParamSpeed = Animator.StringToHash("Speed");
+    private static int animParamDoLanding = Animator.StringToHash("DoLanding");
+    private static int animParamDoFloat = Animator.StringToHash("DoFloat");
+    private static int animParamDoDeath = Animator.StringToHash("DoDeath");
 
     public Collider TargetPointCollider {
         set {
@@ -41,13 +51,18 @@ public class Enemy : GameBehavior {
         }
     }
 
-    public bool IsValidTarget => animator.CurrentClip == EnemyAnimator.Clip.Move;
+    public bool IsValidTarget => targetPointCollider.enabled;
 
     private void Awake() {
-        animator.Configure(
-            model.GetChild(0).gameObject.AddComponent<Animator>(),
-            animationConfig
-        );
+        if (useCustomAnimator) {
+            customAnimator.Configure(
+                model.GetChild(0).gameObject.AddComponent<Animator>(),
+                animationConfig
+            );
+        }
+        else {
+            builtinAnimator = model.GetChild(0).GetComponent<Animator>();
+        }
     }
 
     public void Initialize(float scale, float speed, float pathOffset, float health, ParticleSystem deathEffectPrefab) {
@@ -57,12 +72,20 @@ public class Enemy : GameBehavior {
         this.pathOffset = pathOffset;
         this.Health = health;
         this.deathEffectPrefab = deathEffectPrefab;
-        animator.PlayIntro();
+        if (useCustomAnimator) {
+            customAnimator.PlayIntro();
+        }
+        else {
+            // builtinAnimator.StartPlayback();
+            builtinAnimator.SetTrigger(animParamDoLanding);
+        }
         targetPointCollider.enabled = false;
     }
 
     private void OnDestroy() {
-        animator.Destroy();
+        if (useCustomAnimator) {
+            customAnimator.Destroy();
+        }
     }
 
     public void ApplyDamage(float damage) {
@@ -71,35 +94,70 @@ public class Enemy : GameBehavior {
     }
 
     public override bool GameUpdate() {
-        animator.GameUpdate();
-        if (animator.CurrentClip == EnemyAnimator.Clip.Intro) {
-            if (!animator.IsDone) {
+        if (useCustomAnimator) {
+            customAnimator.GameUpdate();
+            if (customAnimator.CurrentClip == EnemyAnimator.Clip.Intro) {
+                if (!customAnimator.IsDone) {
+                    return true;
+                }
+                customAnimator.PlayMove(speed / Scale);
+                targetPointCollider.enabled = true;
+            }
+            else if (customAnimator.CurrentClip == EnemyAnimator.Clip.Outro
+                    || customAnimator.CurrentClip == EnemyAnimator.Clip.Dying) {
+                if (customAnimator.IsDone) {
+                    Recycle();
+                    return false;
+                }
                 return true;
             }
-            animator.PlayMove(speed / Scale);
-            targetPointCollider.enabled = true;
+            if (Health <= 0f) {
+                Game.EnemyDied(this);
+                SpawnDeathParticleSystem();
+                customAnimator.PlayDying();
+                targetPointCollider.enabled = false;
+                return true;
+            }
         }
-        else if (animator.CurrentClip == EnemyAnimator.Clip.Outro
-                || animator.CurrentClip == EnemyAnimator.Clip.Dying) {
-            if (animator.IsDone) {
+        else {
+            AnimatorStateInfo currentAnim = builtinAnimator.GetCurrentAnimatorStateInfo(0);
+            AnimatorStateInfo nextAnim = builtinAnimator.GetNextAnimatorStateInfo(0);
+            if (currentAnim.IsTag("Intro")) {
+                // nothing to do since intro will transition to idle automatically
+                return true;
+            }
+            else if (currentAnim.IsTag("Idle") && !nextAnim.IsTag("Move")) {
+                // get the enemy moving
+                builtinAnimator.SetFloat(animParamSpeed, speed / 2.0f - 0.1f);
+                targetPointCollider.enabled = true;
+            }
+            else if (currentAnim.IsTag("Exited") || currentAnim.IsTag("Dead")) {
                 Recycle();
                 return false;
             }
-            return true;
-        }
-        if (Health <= 0f) {
-            Game.EnemyDied(this);
-            SpawnDeathParticleSystem();
-            animator.PlayDying();
-            targetPointCollider.enabled = false;
-            return true;
+            else if (currentAnim.IsTag("Dying") || nextAnim.IsTag("Dying") || currentAnim.IsTag("Outro") || nextAnim.IsTag("Outro")) {
+                return true;
+            }
+
+            if (Health <= 0f && !currentAnim.IsTag("Dying") && !nextAnim.IsTag("Dying")) {
+                Game.EnemyDied(this);
+                SpawnDeathParticleSystem();
+                builtinAnimator.SetTrigger(animParamDoDeath);
+                targetPointCollider.enabled = false;
+                return true;
+            }
         }
 
         progress += Time.deltaTime * progressFactor;
         while (progress >= 1f) {
             if (tileTo == null) {
                 Game.EnemyReachedDestination();
-                animator.PlayOutro();
+                if (useCustomAnimator) {
+                    customAnimator.PlayOutro();
+                }
+                else {
+                    builtinAnimator.SetTrigger(animParamDoFloat);
+                }
                 targetPointCollider.enabled = false;
                 return true;
             }
@@ -128,7 +186,9 @@ public class Enemy : GameBehavior {
 
     public override void Recycle() {
         OriginFactory.Reclaim(this);
-        animator.Stop();
+        if (useCustomAnimator) {
+            customAnimator.Stop();
+        }
     }
 
     internal void spawnOn(GameTile tile) {

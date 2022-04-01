@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3377359bdbe58e94f9b13f86fb71b17a, type: 3}
+  m_Name: EnemyFactoryPirate
+  m_EditorClassIdentifier: 
+  small:
+    prefab: {fileID: 5064112077295112490, guid: 9ab3ab6121c2b7641b509a08ac3bdea0,
+      type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
+      type: 3}
+    scale:
+      min: 0.5
+      max: 0.5
+    speed:
+      min: 3
+      max: 3
+    health:
+      min: 25
+      max: 25
+    pathOffset:
+      min: -0.4
+      max: 0.4
+  medium:
+    prefab: {fileID: 5064112077295112490, guid: 996ed4d18cfb7654295647ca5af29ca8,
+      type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
+      type: 3}
+    scale:
+      min: 1
+      max: 1
+    speed:
+      min: 1
+      max: 2
+    health:
+      min: 100
+      max: 100
+    pathOffset:
+      min: -0.25
+      max: 0.25
+  large:
+    prefab: {fileID: 5064112077295112490, guid: 96cf559f193811349a140f9f8517abfe,
+      type: 3}
+    DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
+      type: 3}
+    scale:
+      min: 1.5
+      max: 1.5
+    speed:
+      min: 0.5
+      max: 0.5
+    health:
+      min: 200
+      max: 200
+    pathOffset:
+      min: 0
+      max: 0
