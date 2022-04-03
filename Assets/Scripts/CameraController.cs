@@ -19,7 +19,8 @@ public class CameraController : MonoBehaviour {
     [SerializeField]
     bool drawDebugGizmo = false;
 
-    Vector2 mouseDragStartPosition = Vector2.zero;
+    Vector2 mouseRightDragStartPosition = Vector2.zero;
+    Vector2 mouseMiddleDragStartPosition = Vector2.zero;
     Cinemachine3rdPersonFollow primaryCamera3P;
 
     private void Awake() {
@@ -50,22 +51,37 @@ public class CameraController : MonoBehaviour {
             transform.Translate(dir.normalized * cameraMoveSpeed * Time.unscaledDeltaTime);
         }
 
+        if (mouse.middleButton.wasPressedThisFrame) {
+            Debug.Log("Middle button pressed");
+            mouseMiddleDragStartPosition = mouse.position.ReadValue();
+        }
+        else if (mouse.middleButton.wasReleasedThisFrame) {
+            Debug.Log("Middle button released");
+            mouseMiddleDragStartPosition = Vector2.zero;
+        }
+        if (mouseMiddleDragStartPosition != Vector2.zero) {
+            var diff = (mouse.position.ReadValue() - mouseMiddleDragStartPosition) * Time.unscaledDeltaTime;
+            transform.Translate(new Vector3(diff.x, 0, diff.y));
+            mouseMiddleDragStartPosition = mouse.position.ReadValue();
+        }
+
         if (mouse.rightButton.wasPressedThisFrame) {
-            mouseDragStartPosition = mouse.position.ReadValue();
+            mouseRightDragStartPosition = mouse.position.ReadValue();
         }
         else if (mouse.rightButton.wasReleasedThisFrame) {
-            mouseDragStartPosition = Vector2.zero;
+            mouseRightDragStartPosition = Vector2.zero;
         }
-        if (mouseDragStartPosition != Vector2.zero) {
-            var diff = (mouse.position.ReadValue() - mouseDragStartPosition) * Time.unscaledDeltaTime;
+        if (mouseRightDragStartPosition != Vector2.zero) {
+            var diff = (mouse.position.ReadValue() - mouseRightDragStartPosition) * Time.unscaledDeltaTime;
 
             transform.localRotation = Quaternion.Euler(
                 transform.localRotation.eulerAngles.x,
                 transform.localRotation.eulerAngles.y + diff.x * cameraRotateSpeed,
                 transform.localRotation.eulerAngles.z
             );
-            mouseDragStartPosition = mouse.position.ReadValue();
+            mouseRightDragStartPosition = mouse.position.ReadValue();
         }
+
         if (mouse.scroll.ReadValue().y != 0) {
             primaryCamera3P.VerticalArmLength = cameraZoomRange.Clamp(primaryCamera3P.VerticalArmLength - mouse.scroll.ReadValue().y * Time.unscaledDeltaTime * cameraZoomSpeed);
         }
