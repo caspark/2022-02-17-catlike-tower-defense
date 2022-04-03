@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: Wave-Pirates
   m_EditorClassIdentifier: 
   spawnSequences:
-  - factory: {fileID: 11400000, guid: 6091075e9d0e48a4e95caafd0af0c22e, type: 2}
+  - factory: {fileID: 11400000, guid: d3e5b42d2181a3c4fa642ef8a0510b88, type: 2}
     type: 0
     amount: 4
-    cooldown: 0.3
+    cooldown: 1
   - factory: {fileID: 11400000, guid: d3e5b42d2181a3c4fa642ef8a0510b88, type: 2}
     type: 1
-    amount: 10
+    amount: 5
     cooldown: 1
-  - factory: {fileID: 11400000, guid: 703623c6fa9423540b1b679a95945170, type: 2}
+  - factory: {fileID: 11400000, guid: d3e5b42d2181a3c4fa642ef8a0510b88, type: 2}
+    type: 2
+    amount: 1
+    cooldown: 0.1
+  - factory: {fileID: 11400000, guid: d3e5b42d2181a3c4fa642ef8a0510b88, type: 2}
     type: 1
-    amount: 10
+    amount: 5
     cooldown: 1

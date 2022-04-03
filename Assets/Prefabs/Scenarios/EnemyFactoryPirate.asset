@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: EnemyFactoryPirate
   m_EditorClassIdentifier: 
   small:
-    prefab: {fileID: 5064112077295112490, guid: 9ab3ab6121c2b7641b509a08ac3bdea0,
+    prefab: {fileID: 5064112077295112490, guid: d298ed4869bccad47b88150db0df72db,
       type: 3}
     DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
       type: 3}
     scale:
-      min: 0.5
-      max: 0.5
+      min: 0.75
+      max: 0.75
     speed:
-      min: 3
+      min: 2
       max: 3
     health:
       min: 25
@@ -41,13 +41,13 @@ MonoBehaviour:
       min: 1
       max: 2
     health:
-      min: 100
-      max: 100
+      min: 75
+      max: 75
     pathOffset:
       min: -0.25
       max: 0.25
   large:
-    prefab: {fileID: 5064112077295112490, guid: 96cf559f193811349a140f9f8517abfe,
+    prefab: {fileID: 5064112077295112490, guid: 9b05032c66b4d6c438f31eeef1df97b3,
       type: 3}
     DeathEffectPrefab: {fileID: 6368650108181580305, guid: 72f6c1bd56d632a4f84bc54cce466df4,
       type: 3}
@@ -55,8 +55,8 @@ MonoBehaviour:
       min: 1.5
       max: 1.5
     speed:
-      min: 0.5
-      max: 0.5
+      min: 0.8
+      max: 1
     health:
       min: 200
       max: 200
