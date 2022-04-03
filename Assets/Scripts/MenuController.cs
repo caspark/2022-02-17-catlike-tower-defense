@@ -29,6 +29,13 @@ public class MenuController : MonoBehaviour {
     private bool scenarioFinished = false;
 
     private void Awake() {
+        uIDocument.rootVisualElement.Q<Button>("Quit").clicked += () => {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        };
         PopulateUI();
     }
 

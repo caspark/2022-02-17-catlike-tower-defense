@@ -11,7 +11,11 @@
                     <ui:Button text="Level 1" class="button" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="Right" style="flex-direction: column; -unity-text-align: upper-right; width: 25%;" />
+            <ui:VisualElement name="Right" style="flex-direction: column-reverse; -unity-text-align: upper-right; width: 25%;">
+                <ui:VisualElement style="flex-direction: row-reverse;">
+                    <ui:Button text="Quit" display-tooltip-when-elided="true" name="Quit" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
