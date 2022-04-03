@@ -62,14 +62,18 @@ public class GameScenario : ScriptableObject {
 
             wave.AddProgressString(sb);
             if (scenario.cycles == -1) {
-                sb.Append(" (Infinite)");
+                sb.Append(" (Endless: ");
+                sb.Append(timeScale.ToString("p0"));
+                sb.Append(" spawn speed)");
             }
             else if (scenario.cycles != 1) {
                 sb.Append(" (Cycle ");
                 sb.Append(cycle + 1);
                 sb.Append(" / ");
                 sb.Append(scenario.cycles);
-                sb.Append(")");
+                sb.Append(": ");
+                sb.Append(timeScale.ToString("p0"));
+                sb.Append(" spawn speed)");
             }
             return sb.ToString();
         }
