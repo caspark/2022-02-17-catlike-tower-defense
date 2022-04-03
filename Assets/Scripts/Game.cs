@@ -10,9 +10,14 @@ using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
     enum GameState {
+        Setup,
         Playing,
         GameOver,
     }
+
+    public delegate void OnGameOver();
+
+    public event OnGameOver GameOverHandler;
 
     [SerializeField] private Vector2Int boardSize = new Vector2Int(11, 11);
 
@@ -20,7 +25,7 @@ public class Game : MonoBehaviour {
 
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
     [SerializeField] private WarFactory warFactory = default;
-    [SerializeField] private GameScenario scenario = default;
+    [SerializeField] public GameScenario scenario = default;
     [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
     [SerializeField] private float playSpeed = 1f;
     [SerializeField] private UIDocument uiDocument = default;
@@ -56,7 +61,7 @@ public class Game : MonoBehaviour {
     [SerializeField, Required]
     private AudioClip defeatSound = default;
 
-    GameState gameState = GameState.Playing;
+    GameState gameState = GameState.Setup;
 
     Label gameOverLabel = default;
 
@@ -98,8 +103,6 @@ public class Game : MonoBehaviour {
     private void Awake() {
         board.Initialize(boardSize, tileContentFactory);
         board.ShowGrid = true;
-        activeScenario = scenario.Begin();
-        playerHealth = startingPlayerHealth;
 
         audioSource = GetComponent<AudioSource>();
         Debug.Assert(audioSource != null, "No audio source found!");
@@ -127,7 +130,6 @@ public class Game : MonoBehaviour {
         });
 
         // Init UI state
-        UpdateAllUI();
         SelectTowerType(TowerType.Laser);
     }
 
@@ -146,7 +148,11 @@ public class Game : MonoBehaviour {
     }
 
     private void Update() {
-        if (gameState != GameState.Playing) {
+        if (gameState == GameState.Setup) {
+            BeginNewGame();
+        }
+        else if (gameState == GameState.GameOver) {
+            // wait for gameover state to be cleared
             return;
         }
 
@@ -225,7 +231,7 @@ public class Game : MonoBehaviour {
         audioSource.Stop();
         defeatModel.SetActive(false);
 
-        BeginNewGame();
+        EmitGameOverAndPossiblyRestart();
     }
 
 
@@ -242,7 +248,16 @@ public class Game : MonoBehaviour {
         audioSource.Stop();
         victoryParticles.Stop();
 
-        BeginNewGame();
+        EmitGameOverAndPossiblyRestart();
+    }
+
+    private void EmitGameOverAndPossiblyRestart() {
+        if (GameOverHandler == null) {
+            BeginNewGame();
+        }
+        else {
+            GameOverHandler();
+        }
     }
 
     private void SelectTowerType(TowerType type) {

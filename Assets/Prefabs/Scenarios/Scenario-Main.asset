@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a7d1689944e74bb2ad580b1addc52, type: 3}
   m_Name: Scenario-Main
   m_EditorClassIdentifier: 
+  scenarioName: Shape Attack
   waves:
   - {fileID: 11400000, guid: b71fe26eb4ecf994d8f09752572930fc, type: 2}
   - {fileID: 11400000, guid: 70d7c50d4aed2c147be6f7a7c9aad65f, type: 2}

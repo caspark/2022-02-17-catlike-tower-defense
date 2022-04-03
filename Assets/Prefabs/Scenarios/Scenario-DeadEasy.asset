@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a7d1689944e74bb2ad580b1addc52, type: 3}
   m_Name: Scenario-DeadEasy
   m_EditorClassIdentifier: 
+  scenarioName: Dead Easy
   waves:
   - {fileID: 11400000, guid: d989e328886e7564080013004040dba3, type: 2}
+  cycles: 1
+  cycleSpeedUp: 0.5

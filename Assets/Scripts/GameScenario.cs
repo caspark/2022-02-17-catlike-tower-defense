@@ -6,6 +6,9 @@ using UnityEngine;
 public class GameScenario : ScriptableObject {
 
     [SerializeField]
+    public string scenarioName = default;
+
+    [SerializeField]
     EnemyWave[] waves = { };
 
     [SerializeField, Range(0, 10)]

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d3a7d1689944e74bb2ad580b1addc52, type: 3}
   m_Name: Scenario-Pirates
   m_EditorClassIdentifier: 
+  scenarioName: Avast Mateys
   waves:
   - {fileID: 11400000, guid: e9634073109cb9a49a61aac747f8d81a, type: 2}
   cycles: 3
