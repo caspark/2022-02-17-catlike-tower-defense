@@ -133,11 +133,21 @@ public class Game : MonoBehaviour {
         SelectTowerType(TowerType.Laser);
     }
 
-    void BeginNewGame() {
-        Debug.Log("Beginning new game");
+    public void TearDownGame() {
         enemies.Clear();
         nonEnemies.Clear();
         board.Clear();
+    }
+
+    void BeginNewGame() {
+        Debug.Log("Beginning new game");
+        TearDownGame();
+
+        board.ToggleDestination(board.GetTile(boardSize.x * boardSize.y / 2));
+        board.ToggleSpawnPoint(board.GetTile(0));
+        board.ToggleTower(board.GetTile(boardSize.x * 2 + 3), TowerType.Mortar);
+        board.ToggleTower(board.GetTile(boardSize.x * 2 + 4), TowerType.Laser);
+
         activeScenario = scenario.Begin();
         playerHealth = startingPlayerHealth;
         killCount = 0;

@@ -72,6 +72,9 @@ public class MenuController : MonoBehaviour {
     }
 
     private IEnumerator UnloadScenario() {
+        Game game = FindObjectOfType<Game>();
+        game.TearDownGame();
+
         foreach (GameObject menuOnly in this.menuOnlyLax) {
             menuOnly.SetActive(true);
         }

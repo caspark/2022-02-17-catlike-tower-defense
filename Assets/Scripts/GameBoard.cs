@@ -101,10 +101,6 @@ public class GameBoard : MonoBehaviour {
         }
         spawnPoints.Clear();
         updatingContent.Clear();
-        ToggleDestination(tiles[tiles.Length / 2]);
-        ToggleSpawnPoint(tiles[0]);
-        ToggleTower(tiles[size.x * 2 + 3], TowerType.Mortar);
-        ToggleTower(tiles[size.x * 2 + 4], TowerType.Laser);
     }
 
     private bool FindPaths() {
@@ -221,6 +217,14 @@ public class GameBoard : MonoBehaviour {
             tile.Content = contentFactory.Get(towerType);
             updatingContent.Add(tile.Content);
         }
+    }
+
+    public GameTile GetTile(int index) {
+        return tiles[index];
+    }
+
+    public GameTile GetTile(int x, int y) {
+        return tiles[y * size.x + x];
     }
 
     public GameTile GetTile(Ray ray) {
