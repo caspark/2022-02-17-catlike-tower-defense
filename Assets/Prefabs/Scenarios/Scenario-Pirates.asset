@@ -15,5 +15,5 @@ MonoBehaviour:
   scenarioName: Avast Mateys
   waves:
   - {fileID: 11400000, guid: e9634073109cb9a49a61aac747f8d81a, type: 2}
-  cycles: 3
-  cycleSpeedUp: 0.5
+  cycles: 10
+  cycleSpeedUp: 0.4
