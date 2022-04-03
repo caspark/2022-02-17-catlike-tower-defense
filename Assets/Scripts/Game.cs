@@ -15,6 +15,13 @@ public class Game : MonoBehaviour {
         GameOver,
     }
 
+    enum BuildTool {
+        // things that should be shown in the UI
+        Wall, LaserTower, MortarTower,
+        // hidden things that can be built
+        SpawnPoint, DestinationPoint,
+    }
+
     public delegate void OnGameOver();
 
     public event OnGameOver GameOverHandler;
@@ -37,7 +44,7 @@ public class Game : MonoBehaviour {
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
-    [ShowInInspector] TowerType selectedTowerType;
+    [ShowInInspector] BuildTool selectedBuildTool;
     [ShowInInspector] int playerHealth;
     private AudioSource audioSource;
     VisualElement uiTowerSelectContainer;
@@ -114,7 +121,7 @@ public class Game : MonoBehaviour {
             .Build()
             .ForEachWithIndex((button, i) => {
                 button.clickable.clicked += () => {
-                    SelectTowerType((TowerType)i);
+                    SelectBuildTool((BuildTool)i);
                 };
             });
         uiTowerSelectContainer = uiRoot.Q<VisualElement>("TowerSelectContainer");
@@ -130,7 +137,7 @@ public class Game : MonoBehaviour {
         });
 
         // Init UI state
-        SelectTowerType(TowerType.Laser);
+        SelectBuildTool(BuildTool.Wall);
     }
 
     public void TearDownGame() {
@@ -174,9 +181,6 @@ public class Game : MonoBehaviour {
         if (mouse.leftButton.wasPressedThisFrame) {
             HandleTouch();
         }
-        else if (mouse.rightButton.wasPressedThisFrame) {
-            HandleAlternativeTouch();
-        }
 
         Keyboard keyboard = Keyboard.current;
         if (keyboard == null) {
@@ -199,10 +203,19 @@ public class Game : MonoBehaviour {
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {
-            SelectTowerType(TowerType.Laser);
+            SelectBuildTool(BuildTool.Wall);
         }
         else if (keyboard.digit2Key.wasPressedThisFrame) {
-            SelectTowerType(TowerType.Mortar);
+            SelectBuildTool(BuildTool.LaserTower);
+        }
+        else if (keyboard.digit3Key.wasPressedThisFrame) {
+            SelectBuildTool(BuildTool.MortarTower);
+        }
+        else if (keyboard.digit4Key.wasPressedThisFrame) {
+            SelectBuildTool(BuildTool.SpawnPoint);
+        }
+        else if (keyboard.digit5Key.wasPressedThisFrame) {
+            SelectBuildTool(BuildTool.DestinationPoint);
         }
 
         if (keyboard.bKey.wasPressedThisFrame) {
@@ -270,9 +283,9 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private void SelectTowerType(TowerType type) {
-        selectedTowerType = type;
-        Debug.Log("Selected tower type: " + selectedTowerType);
+    private void SelectBuildTool(BuildTool type) {
+        selectedBuildTool = type;
+        Debug.Log("Selected build tool: " + selectedBuildTool);
 
         uiTowerSelectContainer.Query<Button>().Build().ForEachWithIndex((child, i) => {
             if (i == (int)type) {
@@ -346,19 +359,21 @@ public class Game : MonoBehaviour {
                 board.ToggleSpawnPoint(tile);
             }
             else {
-                board.ToggleTower(tile, selectedTowerType);
-            }
-        }
-    }
-
-    private void HandleAlternativeTouch() {
-        GameTile tile = board.GetTile(TouchRay);
-        if (tile != null) {
-            if (Keyboard.current.leftShiftKey.isPressed) {
-                board.ToggleDestination(tile);
-            }
-            else {
-                board.ToggleWall(tile);
+                if (selectedBuildTool == BuildTool.Wall) {
+                    board.ToggleWall(tile);
+                }
+                else if (selectedBuildTool == BuildTool.LaserTower) {
+                    board.ToggleTower(tile, TowerType.Laser);
+                }
+                else if (selectedBuildTool == BuildTool.MortarTower) {
+                    board.ToggleTower(tile, TowerType.Mortar);
+                }
+                else if (selectedBuildTool == BuildTool.SpawnPoint) {
+                    board.ToggleSpawnPoint(tile);
+                }
+                else if (selectedBuildTool == BuildTool.DestinationPoint) {
+                    board.ToggleDestination(tile);
+                }
             }
         }
     }
