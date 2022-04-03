@@ -37,18 +37,23 @@ public class CameraController : MonoBehaviour {
             return;
         }
 
-        var dir = new Vector3(
+        var wasdDir = new Vector3(
             keyboard.dKey.ReadValue() - keyboard.aKey.ReadValue(),
             0,
             keyboard.wKey.ReadValue() - keyboard.sKey.ReadValue());
+        var arrowsDir = new Vector3(
+            keyboard.rightArrowKey.ReadValue() - keyboard.leftArrowKey.ReadValue(),
+            0,
+            keyboard.upArrowKey.ReadValue() - keyboard.downArrowKey.ReadValue());
+        var dir = wasdDir + arrowsDir;
         if (dir.sqrMagnitude > 0.01f) {
             transform.Translate(dir.normalized * cameraMoveSpeed * Time.unscaledDeltaTime);
         }
 
-        if (mouse.middleButton.wasPressedThisFrame) {
+        if (mouse.rightButton.wasPressedThisFrame) {
             mouseDragStartPosition = mouse.position.ReadValue();
         }
-        else if (mouse.middleButton.wasReleasedThisFrame) {
+        else if (mouse.rightButton.wasReleasedThisFrame) {
             mouseDragStartPosition = Vector2.zero;
         }
         if (mouseDragStartPosition != Vector2.zero) {
