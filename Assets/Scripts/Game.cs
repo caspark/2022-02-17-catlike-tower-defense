@@ -343,10 +343,10 @@ public class Game : MonoBehaviour {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
             if (Keyboard.current.leftShiftKey.isPressed) {
-                board.ToggleTower(tile, selectedTowerType);
+                board.ToggleSpawnPoint(tile);
             }
             else {
-                board.ToggleWall(tile);
+                board.ToggleTower(tile, selectedTowerType);
             }
         }
     }
@@ -358,7 +358,7 @@ public class Game : MonoBehaviour {
                 board.ToggleDestination(tile);
             }
             else {
-                board.ToggleSpawnPoint(tile);
+                board.ToggleWall(tile);
             }
         }
     }
