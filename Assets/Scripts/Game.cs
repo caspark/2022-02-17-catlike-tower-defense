@@ -9,6 +9,11 @@ using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 public class Game : MonoBehaviour {
+    enum GameState {
+        Playing,
+        GameOver,
+    }
+
     [SerializeField] private Vector2Int boardSize = new Vector2Int(11, 11);
 
     [SerializeField] private GameBoard board = default;
@@ -38,6 +43,32 @@ public class Game : MonoBehaviour {
 
     [SerializeField]
     private AudioClip[] enemyDeath;
+
+    [SerializeField, Required]
+    private ParticleSystem victoryParticles = default;
+
+    [SerializeField, Required]
+    private AudioClip victorySound = default;
+
+    [SerializeField, Required]
+    private GameObject defeatModel = default;
+
+    [SerializeField, Required]
+    private AudioClip defeatSound = default;
+
+    GameState gameState = GameState.Playing;
+
+    Label gameOverLabel = default;
+
+    Label GameOverLabel {
+        get {
+            if (gameOverLabel == null) {
+                gameOverLabel = uiDocument.rootVisualElement.Q<Label>("GameOver");
+                Debug.Assert(gameOverLabel != null, "GameOver label not found!");
+            }
+            return gameOverLabel;
+        }
+    }
 
     public static Shell SpawnShell() {
         Shell shell = instance.warFactory.Shell;
@@ -110,9 +141,15 @@ public class Game : MonoBehaviour {
         killCount = 0;
 
         UpdateAllUI();
+
+        gameState = GameState.Playing;
     }
 
     private void Update() {
+        if (gameState != GameState.Playing) {
+            return;
+        }
+
         Mouse mouse = Mouse.current;
         if (mouse == null) {
             Debug.Log("Mouse not detected!");
@@ -157,20 +194,55 @@ public class Game : MonoBehaviour {
         }
 
         if (playerHealth <= 0 && startingPlayerHealth > 0) {
-            Debug.Log("Defeat!");
-            BeginNewGame();
+            gameState = GameState.GameOver;
+            StartCoroutine(HandleDefeat());
+            return;
         }
 
         if (!activeScenario.Progress() && enemies.isEmpty) {
-            Debug.Log("Victory!");
-            BeginNewGame();
-            activeScenario.Progress();
+            gameState = GameState.GameOver;
+            StartCoroutine(HandleVictory());
+            return;
         }
 
         enemies.GameUpdate();
         Physics.SyncTransforms();
         board.GameUpdate();
         nonEnemies.GameUpdate();
+    }
+
+    private IEnumerator HandleDefeat() {
+        Debug.Log("Defeat!");
+        audioSource.PlayOneShot(defeatSound);
+        defeatModel.SetActive(true);
+        defeatModel.GetComponent<Animator>().SetTrigger("DoDance");
+        GameOverLabel.text = "Defeat :(";
+        GameOverLabel.RemoveFromClassList("game-over-out");
+        GameOverLabel.AddToClassList("game-over-in");
+
+        yield return new WaitForSecondsRealtime(6);
+
+        audioSource.Stop();
+        defeatModel.SetActive(false);
+
+        BeginNewGame();
+    }
+
+
+    private IEnumerator HandleVictory() {
+        Debug.Log("Victory!");
+        audioSource.PlayOneShot(victorySound);
+        victoryParticles.Play();
+        GameOverLabel.text = "Victory!!";
+        GameOverLabel.RemoveFromClassList("game-over-out");
+        GameOverLabel.AddToClassList("game-over-in");
+
+        yield return new WaitForSecondsRealtime(5);
+
+        audioSource.Stop();
+        victoryParticles.Stop();
+
+        BeginNewGame();
     }
 
     private void SelectTowerType(TowerType type) {
@@ -225,6 +297,9 @@ public class Game : MonoBehaviour {
         UpdatePlayerHealthUI();
         UpdateWaveUI();
         UpdateKillsUI();
+
+        GameOverLabel.RemoveFromClassList("game-over-in");
+        GameOverLabel.AddToClassList("game-over-out");
     }
 
     private void UpdatePlayerHealthUI() {

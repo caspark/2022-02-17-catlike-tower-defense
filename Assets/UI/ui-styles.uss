@@ -1,8 +1,8 @@
 .buildButton {
-    border-left-color: rgba(255, 255, 255, 255);
-    border-right-color: rgba(255, 255, 255, 255);
-    border-top-color: rgba(255, 255, 255, 255);
-    border-bottom-color: rgba(255, 255, 255, 255);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
     border-left-width: 2px;
     border-right-width: 2px;
     border-top-width: 2px;
@@ -11,18 +11,18 @@
     border-bottom-left-radius: 4px;
     border-top-right-radius: 4px;
     border-bottom-right-radius: 4px;
-    background-color: rgba(95, 155, 181, 255);
+    background-color: rgb(95, 155, 181);
     font-size: 24px;
     width: 100px;
     height: 100px;
     -unity-text-align: lower-center;
     -unity-font-style: bold;
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
     scale: 0.9 0.9;
 }
 
 .buildButton:active {
-    -unity-background-image-tint-color: rgba(95, 181, 119, 255);
+    -unity-background-image-tint-color: rgb(95, 181, 119);
 }
 
 .buildButton.selected {
@@ -41,7 +41,7 @@
 
 Label {
     font-size: 24px;
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 .kill-inc-out {
@@ -59,11 +59,21 @@ Label {
 .life-inc-out {
     transition-duration: 1s;
     transition-timing-function: ease-in;
-    color: rgba(255, 255, 255, 255);
+    color: rgb(255, 255, 255);
 }
 
 .life-inc-in {
     transition-duration: 0.05s;
     transition-timing-function: ease-out;
-    color: rgba(231, 31, 31, 255);
+    color: rgb(231, 31, 31);
+}
+
+.game-over-in {
+    font-size: 200px;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out-bounce;
+}
+
+.game-over-out {
+    display: none;
 }

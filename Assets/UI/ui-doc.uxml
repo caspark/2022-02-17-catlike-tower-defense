@@ -10,6 +10,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="Middle" style="-unity-text-align: upper-center;">
                 <ui:Label text="Wave Progress" name="Wave" />
+                <ui:Label text="GameOver" name="GameOver" class="game-over-out" style="rotate: -5deg; color: rgba(255, 180, 49, 255); -unity-font-style: bold;" />
             </ui:VisualElement>
             <ui:VisualElement name="Right" style="flex-direction: column; -unity-text-align: upper-right; width: 25%;">
                 <ui:Label text="20 / 20 lives" name="Lives" />
