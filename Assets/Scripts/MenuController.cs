@@ -29,17 +29,10 @@ public class MenuController : MonoBehaviour {
     private bool scenarioFinished = false;
 
     private void Awake() {
-        uIDocument.rootVisualElement.Q<Button>("Quit").clicked += () => {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        };
-        PopulateUI();
+        BindHandlers();
     }
 
-    private void PopulateUI() {
+    private void BindHandlers() {
         VisualElement scenarioSelect = uIDocument.rootVisualElement.Q<VisualElement>("ScenarioSelect");
         scenarioSelect.hierarchy.Clear();
         foreach (GameScenario scenario in scenarios) {
@@ -49,6 +42,14 @@ public class MenuController : MonoBehaviour {
             button.text = scenario.scenarioName;
             scenarioSelect.Add(button);
         }
+
+        uIDocument.rootVisualElement.Q<Button>("Quit").clicked += () => {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        };
     }
 
     private IEnumerator LoadScenario(GameScenario scenario) {
@@ -89,6 +90,6 @@ public class MenuController : MonoBehaviour {
         foreach (GameObject menuOnly in this.menuOnlyStrict) {
             menuOnly.SetActive(true);
         }
-        PopulateUI();
+        BindHandlers();
     }
 }
