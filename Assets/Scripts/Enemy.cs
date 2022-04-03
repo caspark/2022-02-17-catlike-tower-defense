@@ -30,19 +30,18 @@ public class Enemy : GameBehavior {
 
     private float Health;
     private ParticleSystem deathEffectPrefab;
-    private EnemyAnimator customAnimator;
 
     private Collider targetPointCollider;
 
-    //FIXME this should be configurable per prefab (and ideally not cause duplicating all the state transition logic)
-    const bool useCustomAnimator = false;
+    [SerializeField] bool useCustomAnimator = false;
+    private EnemyAnimator customAnimator;
 
     private Animator builtinAnimator;
 
-    private static int animParamSpeed = Animator.StringToHash("Speed");
-    private static int animParamDoLanding = Animator.StringToHash("DoLanding");
-    private static int animParamDoFloat = Animator.StringToHash("DoFloat");
-    private static int animParamDoDeath = Animator.StringToHash("DoDeath");
+    private static int builtinAnimParamSpeed = Animator.StringToHash("Speed");
+    private static int builtinAnimParamDoLanding = Animator.StringToHash("DoLanding");
+    private static int builtinAnimParamDoFloat = Animator.StringToHash("DoFloat");
+    private static int builtinAnimParamDoDeath = Animator.StringToHash("DoDeath");
 
     public Collider TargetPointCollider {
         set {
@@ -77,7 +76,7 @@ public class Enemy : GameBehavior {
         }
         else {
             // builtinAnimator.StartPlayback();
-            builtinAnimator.SetTrigger(animParamDoLanding);
+            builtinAnimator.SetTrigger(builtinAnimParamDoLanding);
         }
         targetPointCollider.enabled = false;
     }
@@ -128,7 +127,7 @@ public class Enemy : GameBehavior {
             }
             else if (currentAnim.IsTag("Idle") && !nextAnim.IsTag("Move")) {
                 // get the enemy moving
-                builtinAnimator.SetFloat(animParamSpeed, speed / 2.0f - 0.1f);
+                builtinAnimator.SetFloat(builtinAnimParamSpeed, speed / 2.0f - 0.1f);
                 targetPointCollider.enabled = true;
             }
             else if (currentAnim.IsTag("Exited") || currentAnim.IsTag("Dead")) {
@@ -142,7 +141,7 @@ public class Enemy : GameBehavior {
             if (Health <= 0f && !currentAnim.IsTag("Dying") && !nextAnim.IsTag("Dying")) {
                 Game.EnemyDied(this);
                 SpawnDeathParticleSystem();
-                builtinAnimator.SetTrigger(animParamDoDeath);
+                builtinAnimator.SetTrigger(builtinAnimParamDoDeath);
                 targetPointCollider.enabled = false;
                 return true;
             }
@@ -156,7 +155,7 @@ public class Enemy : GameBehavior {
                     customAnimator.PlayOutro();
                 }
                 else {
-                    builtinAnimator.SetTrigger(animParamDoFloat);
+                    builtinAnimator.SetTrigger(builtinAnimParamDoFloat);
                 }
                 targetPointCollider.enabled = false;
                 return true;
