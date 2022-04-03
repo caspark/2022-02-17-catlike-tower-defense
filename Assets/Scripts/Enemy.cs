@@ -208,6 +208,7 @@ public class Enemy : GameBehavior {
         directionAngleTo = direction.GetAngle();
         transform.localRotation = direction.GetRotation();
         progressFactor = 2f * speed;
+        PrepareForward();
     }
 
     void PrepareNextState() {
