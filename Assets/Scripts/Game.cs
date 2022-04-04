@@ -32,10 +32,9 @@ public class Game : MonoBehaviour {
     [SerializeField] private WarFactory warFactory = default;
     [SerializeField] public GameScenario scenario = default;
     [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
+    [SerializeField] private float[] playSpeedUiControls = new float[] { 0.01f, 1f, 2f, 10f };
     [SerializeField] private float playSpeed = 1f;
     [SerializeField] private UIDocument uiDocument = default;
-
-    const float pausedTimeScale = 0.01f;
 
     static Game instance;
     GameScenario.State activeScenario;
@@ -121,6 +120,22 @@ public class Game : MonoBehaviour {
             lives.RemoveFromClassList("life-inc-in");
             lives.AddToClassList("life-inc-out");
         });
+        RadioButton[] speedButtons = uiRoot.Q<RadioButtonGroup>("GameSpeed").Query<RadioButton>().Build().ToArray();
+        Debug.Assert(speedButtons.Length == playSpeedUiControls.Length, "Game speed radio buttons must match number of game speeds configured!");
+        speedButtons.ForEachWithIndex((child, i) => {
+            RadioButton radioButton = (RadioButton)child;
+            radioButton.RegisterValueChangedCallback(e => {
+                if (e.newValue) {
+                    playSpeed = playSpeedUiControls[i];
+                    Debug.Log("Play speed changed to " + playSpeed);
+                }
+            });
+        });
+        uiRoot.Q<Button>("Abort").clicked += () => {
+            if (gameState == GameState.Playing) {
+                EmitGameOverAndPossiblyRestart();
+            }
+        };
 
         // Init UI state
         SelectBuildTool(BuildTool.Wall);
@@ -174,6 +189,8 @@ public class Game : MonoBehaviour {
     }
 
     private void Update() {
+        Time.timeScale = gameState == GameState.Playing ? playSpeed : 1f;
+
         if (gameState == GameState.Setup) {
             BeginNewGame();
         }
@@ -202,13 +219,6 @@ public class Game : MonoBehaviour {
         }
         else if (keyboard.gKey.wasPressedThisFrame) {
             board.ShowGrid = !board.ShowGrid;
-        }
-
-        if (keyboard.spaceKey.wasPressedThisFrame) {
-            Time.timeScale = Time.timeScale > pausedTimeScale ? pausedTimeScale : 1f;
-        }
-        else if (Time.timeScale > pausedTimeScale) {
-            Time.timeScale = playSpeed;
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {

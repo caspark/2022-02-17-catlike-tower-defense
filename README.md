@@ -18,9 +18,8 @@ And a few more "extra credit" things:
 
 The main things missing for an actual game are:
 
-* Some kind of constraint on how many towers you can build / how quickly (cooldown or gold supply)
+* Some kind of constraint on how many towers you can build / how quickly (e.g. a cooldown or gold supply)
 * Indicator for where you can/can't build, and preventing building on tiles which enemies are already routing to (so that enemies never overlap)
-* A way to abort an in-progress level (other than losing or winning)
 
 ## Developing
 

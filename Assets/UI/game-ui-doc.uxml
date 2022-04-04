@@ -1,21 +1,36 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI/game-ui-styles.uss?fileID=7433441132597879392&amp;guid=9e6fa206ad7c18e46b990bce3007b946&amp;type=3#ui-styles" />
+    <Style src="project://database/Assets/UI/game-ui-styles.uss?fileID=7433441132597879392&amp;guid=9e6fa206ad7c18e46b990bce3007b946&amp;type=3#game-ui-styles" />
+    <Style src="project://database/Assets/UI/menu-ui-styles.uss?fileID=7433441132597879392&amp;guid=99a9ae4ff36e3b24886c54ec1913bc46&amp;type=3#menu-ui-styles" />
     <ui:VisualElement name="Screen" style="flex-grow: 1; align-items: stretch; justify-content: flex-start;">
         <ui:VisualElement name="Columns" style="flex-direction: row; align-items: stretch; justify-content: space-between; flex-grow: 1;">
-            <ui:VisualElement name="Left" style="flex-direction: column; flex-wrap: nowrap; align-items: stretch; width: 25%;">
+            <ui:VisualElement name="Left" style="flex-direction: column; flex-wrap: nowrap; align-items: stretch; width: 25%; justify-content: space-between;">
                 <ui:VisualElement name="TowerSelectContainer" style="flex-direction: row; flex-shrink: 1;">
                     <ui:Button text="Wall" name="Wall" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/wall.png?fileID=2800000&amp;guid=b27cb83a90076d9449ef957d5c7f22b6&amp;type=3#wall&apos;);" />
                     <ui:Button text="Laser" name="Laser" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/laser.png?fileID=2800000&amp;guid=a41b9a963c0675340a703c0274a58c6a&amp;type=3#laser&apos;);" />
                     <ui:Button text="Mortar" name="Mortar" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/mortar.png?fileID=2800000&amp;guid=3deeebb3f1748b141960c51e3a2e8029&amp;type=3#mortar&apos;);" />
                 </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row;" />
             </ui:VisualElement>
             <ui:VisualElement name="Middle" style="-unity-text-align: upper-center;">
                 <ui:Label text="Wave Progress" name="Wave" />
                 <ui:Label text="GameOver" name="GameOver" class="game-over-out" style="rotate: -5deg; color: rgb(255, 180, 49); -unity-font-style: bold;" />
             </ui:VisualElement>
-            <ui:VisualElement name="Right" style="flex-direction: column; -unity-text-align: upper-right; width: 25%;">
-                <ui:Label text="20 / 20 lives" name="Lives" />
-                <ui:Label text="0 kills" name="Kills" class="bang" />
+            <ui:VisualElement name="Right" style="flex-direction: column; -unity-text-align: upper-right; width: 25%; justify-content: space-between; -unity-background-scale-mode: stretch-to-fill;">
+                <ui:VisualElement style="flex-direction: row-reverse;">
+                    <ui:VisualElement>
+                        <ui:RadioButtonGroup value="1" name="GameSpeed" label="Speed" style="-unity-text-align: upper-right;">
+                            <ui:RadioButton name="Pause" />
+                            <ui:RadioButton name="Play" value="true" />
+                            <ui:RadioButton name="Fast" />
+                            <ui:RadioButton name="Ultra" />
+                        </ui:RadioButtonGroup>
+                        <ui:Label text="20 / 20 lives" name="Lives" />
+                        <ui:Label text="0 kills" name="Kills" class="bang" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-direction: row-reverse;">
+                    <ui:Button name="Abort" text="Abort" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
