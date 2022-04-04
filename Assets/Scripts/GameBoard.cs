@@ -52,7 +52,7 @@ public class GameBoard : MonoBehaviour {
 
     Vector2Int size;
 
-    GameTile[] tiles;
+    GameTile[] tiles = new GameTile[0];
 
     Queue<GameTile> searchFrontier = new Queue<GameTile>();
     private List<GameTile> spawnPoints = new List<GameTile>();

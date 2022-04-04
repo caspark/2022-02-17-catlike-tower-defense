@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Scenario-DeadEasy
   m_EditorClassIdentifier: 
   scenarioName: Dead Easy
+  scenarioLevel: {fileID: 2811297602134710623, guid: ad79574e26f10c34eb3e977441f2f334,
+    type: 3}
   waves:
   - {fileID: 11400000, guid: d989e328886e7564080013004040dba3, type: 2}
   cycles: 1

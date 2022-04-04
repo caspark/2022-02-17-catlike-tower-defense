@@ -26,8 +26,6 @@ public class Game : MonoBehaviour {
 
     public event OnGameOver GameOverHandler;
 
-    [SerializeField] private Vector2Int boardSize = new Vector2Int(11, 11);
-
     [SerializeField] private GameBoard board = default;
 
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
@@ -98,19 +96,7 @@ public class Game : MonoBehaviour {
         instance = this;
     }
 
-    private void OnValidate() {
-        if (boardSize.x < 2) {
-            boardSize.x = 2;
-        }
-        if (boardSize.y < 2) {
-            boardSize.y = 2;
-        }
-    }
-
     private void Awake() {
-        board.Initialize(boardSize, tileContentFactory);
-        board.ShowGrid = true;
-
         audioSource = GetComponent<AudioSource>();
         Debug.Assert(audioSource != null, "No audio source found!");
 
@@ -150,10 +136,33 @@ public class Game : MonoBehaviour {
         Debug.Log("Beginning new game");
         TearDownGame();
 
-        board.ToggleDestination(board.GetTile(boardSize.x * boardSize.y / 2));
-        board.ToggleSpawnPoint(board.GetTile(0));
-        board.ToggleTower(board.GetTile(boardSize.x * 2 + 3), TowerType.Mortar);
-        board.ToggleTower(board.GetTile(boardSize.x * 2 + 4), TowerType.Laser);
+        GameScenario.LevelData level = scenario.LoadLevelData();
+        board.Initialize(level.size, tileContentFactory);
+        board.ShowGrid = true;
+        for (int i = 0; i < level.entities.Length; i++) {
+            GameScenario.LevelEntity entity = level.entities[i];
+            switch (entity) {
+                case GameScenario.LevelEntity.Empty:
+                    break;
+                case GameScenario.LevelEntity.Wall:
+                    board.ToggleWall(board.GetTile(i));
+                    break;
+                case GameScenario.LevelEntity.Destination:
+                    board.ToggleDestination(board.GetTile(i));
+                    break;
+                case GameScenario.LevelEntity.Spawn:
+                    board.ToggleSpawnPoint(board.GetTile(i));
+                    break;
+                case GameScenario.LevelEntity.LaserTower:
+                    board.ToggleTower(board.GetTile(i), TowerType.Laser);
+                    break;
+                case GameScenario.LevelEntity.MortarTower:
+                    board.ToggleTower(board.GetTile(i), TowerType.Mortar);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         activeScenario = scenario.Begin();
         playerHealth = startingPlayerHealth;
