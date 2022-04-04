@@ -72,6 +72,9 @@ public class Game : MonoBehaviour {
     [SerializeField, Required]
     private AudioClip defeatSound = default;
 
+    [SerializeField]
+    private AudioClip placementBlockedSound;
+
     GameState gameState = GameState.Setup;
 
     Label gameOverLabel = default;
@@ -167,7 +170,7 @@ public class Game : MonoBehaviour {
                 case GameScenario.LevelEntity.Empty:
                     break;
                 case GameScenario.LevelEntity.Wall:
-                    board.ToggleWall(board.GetTile(i));
+                    board.PlaceWall(board.GetTile(i));
                     break;
                 case GameScenario.LevelEntity.Destination:
                     board.ToggleDestination(board.GetTile(i));
@@ -176,10 +179,10 @@ public class Game : MonoBehaviour {
                     board.ToggleSpawnPoint(board.GetTile(i));
                     break;
                 case GameScenario.LevelEntity.LaserTower:
-                    board.ToggleTower(board.GetTile(i), TowerType.Laser);
+                    board.PlaceTower(board.GetTile(i), TowerType.Laser);
                     break;
                 case GameScenario.LevelEntity.MortarTower:
-                    board.ToggleTower(board.GetTile(i), TowerType.Mortar);
+                    board.PlaceTower(board.GetTile(i), TowerType.Mortar);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -419,20 +422,35 @@ public class Game : MonoBehaviour {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
             if (selectedBuildTool == BuildTool.Wall) {
-                board.ToggleWall(tile);
+                GameBoard.PlaceResult placeResult = board.PlaceWall(tile);
+                if (placeResult == GameBoard.PlaceResult.ConflictFailure || placeResult == GameBoard.PlaceResult.PathingFailure) {
+                    audioSource.PlayOneShot(placementBlockedSound);
+                }
             }
             else if (selectedBuildTool == BuildTool.LaserTower) {
-                if (laserTowersAvailable >= 1 && board.ToggleTower(tile, TowerType.Laser)) {
-                    laserTowersAvailable--;
-                    UpdateLaserTowerUi();
-                    TrySelectBuildTool(BuildTool.LaserTower);
+                if (laserTowersAvailable >= 1) {
+                    GameBoard.PlaceResult placeResult = board.PlaceTower(tile, TowerType.Laser);
+                    if (placeResult == GameBoard.PlaceResult.Success) {
+                        laserTowersAvailable--;
+                        UpdateLaserTowerUi();
+                        TrySelectBuildTool(BuildTool.LaserTower);
+                    }
+                    else if (placeResult == GameBoard.PlaceResult.ConflictFailure || placeResult == GameBoard.PlaceResult.PathingFailure) {
+                        audioSource.PlayOneShot(placementBlockedSound);
+                    }
                 }
             }
             else if (selectedBuildTool == BuildTool.MortarTower) {
-                if (mortarTowersAvailable >= 1 && board.ToggleTower(tile, TowerType.Mortar)) {
-                    mortarTowersAvailable--;
-                    UpdateMortarTowerUi();
-                    TrySelectBuildTool(BuildTool.MortarTower);
+                if (mortarTowersAvailable >= 1) {
+                    GameBoard.PlaceResult placeResult = board.PlaceTower(tile, TowerType.Mortar);
+                    if (placeResult == GameBoard.PlaceResult.Success) {
+                        mortarTowersAvailable--;
+                        UpdateMortarTowerUi();
+                        TrySelectBuildTool(BuildTool.MortarTower);
+                    }
+                    else if (placeResult == GameBoard.PlaceResult.ConflictFailure || placeResult == GameBoard.PlaceResult.PathingFailure) {
+                        audioSource.PlayOneShot(placementBlockedSound);
+                    }
                 }
             }
             else if (selectedBuildTool == BuildTool.SpawnPoint) {

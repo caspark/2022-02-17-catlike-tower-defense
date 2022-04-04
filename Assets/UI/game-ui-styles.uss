@@ -19,6 +19,7 @@
     -unity-font-style: bold;
     color: rgb(255, 255, 255);
     scale: 0.9 0.9;
+    text-shadow: 1px 2px 0 rgba(0, 0, 0, 255);
 }
 
 .buildButton:active {

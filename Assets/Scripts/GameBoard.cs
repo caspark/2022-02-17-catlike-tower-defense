@@ -5,6 +5,17 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour {
+    public enum PlaceResult {
+        // Content was successfully put on tile
+        Success,
+        // Content was already on tile so it was cleared
+        Cleared,
+        // Content cannot be placed because it would make paths unroutable
+        PathingFailure,
+        // Content cannot be placed because existing content cannot be replaced with this content
+        ConflictFailure
+    }
+
     [SerializeField] private Transform ground = default;
 
     [SerializeField] private GameTile tilePrefab = default;
@@ -153,6 +164,19 @@ public class GameBoard : MonoBehaviour {
         return true;
     }
 
+    public void ToggleSpawnPoint(GameTile tile) {
+        if (tile.Content.Type == GameTileContentType.SpawnPoint) {
+            if (spawnPoints.Count > 1) {
+                spawnPoints.Remove(tile);
+                tile.Content = contentFactory.Get(GameTileContentType.Empty);
+            }
+        }
+        else if (tile.Content.Type == GameTileContentType.Empty) {
+            tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
+            spawnPoints.Add(tile);
+        }
+    }
+
     public void ToggleDestination(GameTile tile) {
         if (tile.Content.Type == GameTileContentType.Destination) {
             tile.Content = contentFactory.Get(GameTileContentType.Empty);
@@ -167,67 +191,61 @@ public class GameBoard : MonoBehaviour {
         }
     }
 
-    public void ToggleWall(GameTile tile) {
+    public PlaceResult PlaceWall(GameTile tile) {
         if (tile.Content.Type == GameTileContentType.Wall) {
             tile.Content = contentFactory.Get(GameTileContentType.Empty);
             FindPaths();
+            return PlaceResult.Cleared;
         }
         else if (tile.Content.Type == GameTileContentType.Empty) {
             tile.Content = contentFactory.Get(GameTileContentType.Wall);
-            if (!FindPaths()) {
+            if (FindPaths()) {
+                return PlaceResult.Success;
+            }
+            else {
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
+                return PlaceResult.PathingFailure;
             }
+        }
+        else {
+            return PlaceResult.ConflictFailure;
         }
     }
 
-    public void ToggleSpawnPoint(GameTile tile) {
-        if (tile.Content.Type == GameTileContentType.SpawnPoint) {
-            if (spawnPoints.Count > 1) {
-                spawnPoints.Remove(tile);
-                tile.Content = contentFactory.Get(GameTileContentType.Empty);
-            }
-        }
-        else if (tile.Content.Type == GameTileContentType.Empty) {
-            tile.Content = contentFactory.Get(GameTileContentType.SpawnPoint);
-            spawnPoints.Add(tile);
-        }
-    }
-
-    // returns true if the tower was successfully placed
-    public bool ToggleTower(GameTile tile, TowerType towerType) {
+    public PlaceResult PlaceTower(GameTile tile, TowerType towerType) {
         if (tile.Content.Type == GameTileContentType.Tower) {
             updatingContent.Remove(tile.Content);
             if (((Tower)tile.Content).TowerType == towerType) {
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
-                return false;
+                return PlaceResult.Cleared;
             }
             else {
                 tile.Content = contentFactory.Get(towerType);
                 updatingContent.Add(tile.Content);
-                return true;
+                return PlaceResult.Success;
             }
         }
         else if (tile.Content.Type == GameTileContentType.Empty) {
             tile.Content = contentFactory.Get(towerType);
             if (FindPaths()) {
                 updatingContent.Add(tile.Content);
-                return true;
+                return PlaceResult.Success;
             }
             else {
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
-                return false;
+                return PlaceResult.Cleared;
             }
         }
         else if (tile.Content.Type == GameTileContentType.Wall) {
             tile.Content = contentFactory.Get(towerType);
             updatingContent.Add(tile.Content);
-            return true;
+            return PlaceResult.Success;
         }
         else {
-            return false;
+            return PlaceResult.ConflictFailure;
         }
     }
 

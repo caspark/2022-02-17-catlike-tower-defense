@@ -1276,6 +1276,8 @@ MonoBehaviour:
   victorySound: {fileID: 8300000, guid: ded5e827de5e9724d8ab0832fde3c4d8, type: 3}
   defeatModel: {fileID: 1865658778}
   defeatSound: {fileID: 8300000, guid: 6a65e88f259e891478f3dab76d67cd28, type: 3}
+  placementBlockedSound: {fileID: 8300000, guid: 7a17e7e6ffa5bd642b0f2eefe5aaaaab,
+    type: 3}
 --- !u!4 &674280193
 Transform:
   m_ObjectHideFlags: 0

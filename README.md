@@ -18,7 +18,7 @@ A game originally based on the [Catlike Coding Tower Defence tutorial](https://c
 
 It works as a game, however there are 2 things that would help it:
 
-1. An indicator for where you can/can't build, and preventing building on tiles which enemies are already routing to (so that enemies never overlap)
+1. Preventing building on tiles which enemies are already routing to (so that enemies never overlap with towers/walls)
 2. Actual game balance and design tuning :D
 
 ## Developing
