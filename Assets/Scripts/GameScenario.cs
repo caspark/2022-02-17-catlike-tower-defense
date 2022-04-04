@@ -46,7 +46,7 @@ public class GameScenario : ScriptableObject {
         LevelData data = new LevelData();
         if (scenarioLevel == null) {
             Debug.Log("No level data found for scenario ", this);
-            data.size = new Vector2Int(10, 10);
+            data.size = new Vector2Int(7, 7);
 
             data.entities = new LevelEntity[data.size.x * data.size.y];
             for (int i = 0; i < data.entities.Length; i++) {
@@ -54,11 +54,7 @@ public class GameScenario : ScriptableObject {
             }
 
             data.entities[0] = LevelEntity.Spawn;
-            int dest = data.size.x * data.size.y / 2;
-            data.entities[dest] = LevelEntity.Destination;
-            data.entities[dest / 2 - 1] = LevelEntity.Wall;
-            data.entities[dest / 2] = LevelEntity.LaserTower;
-            data.entities[dest / 2 + 1] = LevelEntity.MortarTower;
+            data.entities[data.size.x * data.size.y / 2] = LevelEntity.Destination;
             Debug.Log("Generated level data for scenario " + string.Join(", ", data.entities));
         }
         else {

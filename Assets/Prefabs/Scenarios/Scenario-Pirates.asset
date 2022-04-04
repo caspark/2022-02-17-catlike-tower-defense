@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Scenario-Pirates
   m_EditorClassIdentifier: 
   scenarioName: Avast Mateys
+  scenarioLevel: {fileID: 0}
   waves:
   - {fileID: 11400000, guid: e9634073109cb9a49a61aac747f8d81a, type: 2}
   cycles: 10
