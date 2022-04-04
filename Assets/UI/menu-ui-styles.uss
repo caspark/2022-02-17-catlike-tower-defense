@@ -17,7 +17,6 @@ Button {
 }
 
 Button:hover {
-    font-size: 200%;
     color: rgb(255, 255, 255);
     border-left-width: 4px;
     border-right-width: 4px;
@@ -40,7 +39,7 @@ Button:hover {
 }
 
 Button:active {
-    background-color: rgba(0, 204, 76, 255);
+    background-color: rgb(0, 204, 76);
     transition-timing-function: ease-out;
     transition-duration: 0.2s;
 }

@@ -1255,14 +1255,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a5c1ea391f679b4f952fb472cf5880a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 11, y: 11}
   board: {fileID: 391818651}
   tileContentFactory: {fileID: 11400000, guid: f01e2f9e7a2b56240bc859ecccd213b4, type: 2}
   warFactory: {fileID: 11400000, guid: 849eb168f996b144e8e5f5251bfd54e4, type: 2}
-  scenario: {fileID: 11400000, guid: 53abac6d06e61c44bb494cb181ad569d, type: 2}
-  startingPlayerHealth: 20
+  scenario: {fileID: 11400000, guid: ec6f951170350164484899745cfc42ba, type: 2}
+  playSpeedUiControls:
+  - 0.01
+  - 1
+  - 2
+  - 10
   playSpeed: 1
   uiDocument: {fileID: 250009561}
+  laserTowerAccumSpeed: 0.2
+  mortarTowerAccumSpeed: 0.1
   loseLife: {fileID: 8300000, guid: a0e2c6648fe02f7468701d36659aee14, type: 3}
   enemyDeath:
   - {fileID: 8300000, guid: 21f22b9feda76f342b69d93e9d4da438, type: 3}

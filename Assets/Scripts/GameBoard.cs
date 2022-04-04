@@ -194,31 +194,40 @@ public class GameBoard : MonoBehaviour {
         }
     }
 
-    public void ToggleTower(GameTile tile, TowerType towerType) {
+    // returns true if the tower was successfully placed
+    public bool ToggleTower(GameTile tile, TowerType towerType) {
         if (tile.Content.Type == GameTileContentType.Tower) {
             updatingContent.Remove(tile.Content);
             if (((Tower)tile.Content).TowerType == towerType) {
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
+                return false;
             }
             else {
                 tile.Content = contentFactory.Get(towerType);
                 updatingContent.Add(tile.Content);
+                return true;
             }
         }
         else if (tile.Content.Type == GameTileContentType.Empty) {
             tile.Content = contentFactory.Get(towerType);
             if (FindPaths()) {
                 updatingContent.Add(tile.Content);
+                return true;
             }
             else {
                 tile.Content = contentFactory.Get(GameTileContentType.Empty);
                 FindPaths();
+                return false;
             }
         }
         else if (tile.Content.Type == GameTileContentType.Wall) {
             tile.Content = contentFactory.Get(towerType);
             updatingContent.Add(tile.Content);
+            return true;
+        }
+        else {
+            return false;
         }
     }
 

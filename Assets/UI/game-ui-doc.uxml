@@ -5,9 +5,9 @@
         <ui:VisualElement name="Columns" style="flex-direction: row; align-items: stretch; justify-content: space-between; flex-grow: 1;">
             <ui:VisualElement name="Left" style="flex-direction: column; flex-wrap: nowrap; align-items: stretch; width: 25%; justify-content: space-between;">
                 <ui:VisualElement name="TowerSelectContainer" style="flex-direction: row; flex-shrink: 1;">
-                    <ui:Button text="Wall" name="Wall" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/wall.png?fileID=2800000&amp;guid=b27cb83a90076d9449ef957d5c7f22b6&amp;type=3#wall&apos;);" />
-                    <ui:Button text="Laser" name="Laser" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/laser.png?fileID=2800000&amp;guid=a41b9a963c0675340a703c0274a58c6a&amp;type=3#laser&apos;);" />
-                    <ui:Button text="Mortar" name="Mortar" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/mortar.png?fileID=2800000&amp;guid=3deeebb3f1748b141960c51e3a2e8029&amp;type=3#mortar&apos;);" />
+                    <ui:Button text="∞ Walls" name="Wall" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/wall.png?fileID=2800000&amp;guid=b27cb83a90076d9449ef957d5c7f22b6&amp;type=3#wall&apos;);" />
+                    <ui:Button text="XX Laser" name="Laser" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/laser.png?fileID=2800000&amp;guid=a41b9a963c0675340a703c0274a58c6a&amp;type=3#laser&apos;);" />
+                    <ui:Button text="XX Mortar" name="Mortar" class="buildButton" style="background-image: url(&apos;project://database/Assets/UI/mortar.png?fileID=2800000&amp;guid=3deeebb3f1748b141960c51e3a2e8029&amp;type=3#mortar&apos;);" />
                 </ui:VisualElement>
                 <ui:VisualElement style="flex-direction: row;" />
             </ui:VisualElement>

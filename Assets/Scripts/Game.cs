@@ -31,7 +31,6 @@ public class Game : MonoBehaviour {
     [SerializeField] private GameTileContentFactory tileContentFactory = default;
     [SerializeField] private WarFactory warFactory = default;
     [SerializeField] public GameScenario scenario = default;
-    [SerializeField, Range(0, 100)] private int startingPlayerHealth = 10;
     [SerializeField] private float[] playSpeedUiControls = new float[] { 0.01f, 1f, 2f, 10f };
     [SerializeField] private float playSpeed = 1f;
     [SerializeField] private UIDocument uiDocument = default;
@@ -41,6 +40,14 @@ public class Game : MonoBehaviour {
     Ray TouchRay => Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
     GameBehaviorCollection enemies = new GameBehaviorCollection();
     GameBehaviorCollection nonEnemies = new GameBehaviorCollection();
+
+    [SerializeField] float laserTowerAccumSpeed = 0.2f;
+    [ShowInInspector] float laserTowerPartials;
+    [ShowInInspector] int laserTowersAvailable;
+    [SerializeField] float mortarTowerAccumSpeed = 0.1f;
+    [ShowInInspector] float mortarTowerPartials;
+    [ShowInInspector] int mortarTowersAvailable;
+
     [ShowInInspector] BuildTool selectedBuildTool;
     [ShowInInspector] int playerHealth;
     private AudioSource audioSource;
@@ -106,7 +113,7 @@ public class Game : MonoBehaviour {
             .Build()
             .ForEachWithIndex((button, i) => {
                 button.clickable.clicked += () => {
-                    SelectBuildTool((BuildTool)i);
+                    TrySelectBuildTool((BuildTool)i);
                 };
             });
         uiTowerSelectContainer = uiRoot.Q<VisualElement>("TowerSelectContainer");
@@ -138,7 +145,7 @@ public class Game : MonoBehaviour {
         };
 
         // Init UI state
-        SelectBuildTool(BuildTool.Wall);
+        TrySelectBuildTool(BuildTool.Wall);
     }
 
     public void TearDownGame() {
@@ -179,8 +186,10 @@ public class Game : MonoBehaviour {
             }
         }
 
+        playerHealth = scenario.livesAvailable;
+        laserTowerPartials = scenario.laserTowersAvailable;
+        mortarTowerPartials = scenario.mortarTowersAvailable;
         activeScenario = scenario.Begin();
-        playerHealth = startingPlayerHealth;
         killCount = 0;
 
         UpdateAllUI();
@@ -222,26 +231,26 @@ public class Game : MonoBehaviour {
         }
 
         if (keyboard.digit1Key.wasPressedThisFrame) {
-            SelectBuildTool(BuildTool.Wall);
+            TrySelectBuildTool(BuildTool.Wall);
         }
         else if (keyboard.digit2Key.wasPressedThisFrame) {
-            SelectBuildTool(BuildTool.LaserTower);
+            TrySelectBuildTool(BuildTool.LaserTower);
         }
         else if (keyboard.digit3Key.wasPressedThisFrame) {
-            SelectBuildTool(BuildTool.MortarTower);
+            TrySelectBuildTool(BuildTool.MortarTower);
         }
         else if (keyboard.digit4Key.wasPressedThisFrame) {
-            SelectBuildTool(BuildTool.SpawnPoint);
+            TrySelectBuildTool(BuildTool.SpawnPoint);
         }
         else if (keyboard.digit5Key.wasPressedThisFrame) {
-            SelectBuildTool(BuildTool.DestinationPoint);
+            TrySelectBuildTool(BuildTool.DestinationPoint);
         }
 
         if (keyboard.bKey.wasPressedThisFrame) {
             BeginNewGame();
         }
 
-        if (playerHealth <= 0 && startingPlayerHealth > 0) {
+        if (playerHealth <= 0 && scenario.livesAvailable > 0) {
             gameState = GameState.GameOver;
             StartCoroutine(HandleDefeat());
             return;
@@ -252,6 +261,20 @@ public class Game : MonoBehaviour {
             StartCoroutine(HandleVictory());
             return;
         }
+
+        laserTowerPartials += laserTowerAccumSpeed * Time.deltaTime;
+        while (laserTowerPartials > 1.0f) {
+            laserTowerPartials -= 1.0f;
+            laserTowersAvailable++;
+            UpdateLaserTowerUi();
+        }
+        mortarTowerPartials += mortarTowerAccumSpeed * Time.deltaTime;
+        while (mortarTowerPartials > 1.0f) {
+            mortarTowerPartials -= 1.0f;
+            mortarTowersAvailable++;
+            UpdateMortarTowerUi();
+        }
+
 
         enemies.GameUpdate();
         Physics.SyncTransforms();
@@ -302,7 +325,14 @@ public class Game : MonoBehaviour {
         }
     }
 
-    private void SelectBuildTool(BuildTool type) {
+    private void TrySelectBuildTool(BuildTool type) {
+        if (type == BuildTool.LaserTower && laserTowersAvailable < 1) {
+            type = BuildTool.Wall;
+        }
+        if (type == BuildTool.MortarTower && mortarTowersAvailable < 1) {
+            type = BuildTool.Wall;
+        }
+
         selectedBuildTool = type;
         Debug.Log("Selected build tool: " + selectedBuildTool);
 
@@ -354,13 +384,27 @@ public class Game : MonoBehaviour {
         UpdatePlayerHealthUI();
         UpdateWaveUI();
         UpdateKillsUI();
+        UpdateLaserTowerUi();
+        UpdateMortarTowerUi();
 
         GameOverLabel.RemoveFromClassList("game-over-in");
         GameOverLabel.AddToClassList("game-over-out");
     }
 
+    private void UpdateLaserTowerUi() {
+        Button button = uiDocument.rootVisualElement.Q<Button>("Laser");
+        button.text = laserTowersAvailable + (laserTowersAvailable == 1 ? " Laser" : " Lasers");
+        button.SetEnabled(laserTowersAvailable > 0);
+    }
+
+    private void UpdateMortarTowerUi() {
+        Button button = uiDocument.rootVisualElement.Q<Button>("Mortar");
+        button.text = mortarTowersAvailable + (mortarTowersAvailable == 1 ? " Mortar" : " Mortars");
+        button.SetEnabled(mortarTowersAvailable > 0);
+    }
+
     private void UpdatePlayerHealthUI() {
-        uiDocument.rootVisualElement.Q<Label>("Lives").text = $"{playerHealth} / {startingPlayerHealth} lives";
+        uiDocument.rootVisualElement.Q<Label>("Lives").text = $"{playerHealth} / {scenario.livesAvailable} lives";
     }
 
     private void UpdateWaveUI() {
@@ -374,25 +418,28 @@ public class Game : MonoBehaviour {
     private void HandleTouch() {
         GameTile tile = board.GetTile(TouchRay);
         if (tile != null) {
-            if (Keyboard.current.leftShiftKey.isPressed) {
+            if (selectedBuildTool == BuildTool.Wall) {
+                board.ToggleWall(tile);
+            }
+            else if (selectedBuildTool == BuildTool.LaserTower) {
+                if (laserTowersAvailable >= 1 && board.ToggleTower(tile, TowerType.Laser)) {
+                    laserTowersAvailable--;
+                    UpdateLaserTowerUi();
+                    TrySelectBuildTool(BuildTool.LaserTower);
+                }
+            }
+            else if (selectedBuildTool == BuildTool.MortarTower) {
+                if (mortarTowersAvailable >= 1 && board.ToggleTower(tile, TowerType.Mortar)) {
+                    mortarTowersAvailable--;
+                    UpdateMortarTowerUi();
+                    TrySelectBuildTool(BuildTool.MortarTower);
+                }
+            }
+            else if (selectedBuildTool == BuildTool.SpawnPoint) {
                 board.ToggleSpawnPoint(tile);
             }
-            else {
-                if (selectedBuildTool == BuildTool.Wall) {
-                    board.ToggleWall(tile);
-                }
-                else if (selectedBuildTool == BuildTool.LaserTower) {
-                    board.ToggleTower(tile, TowerType.Laser);
-                }
-                else if (selectedBuildTool == BuildTool.MortarTower) {
-                    board.ToggleTower(tile, TowerType.Mortar);
-                }
-                else if (selectedBuildTool == BuildTool.SpawnPoint) {
-                    board.ToggleSpawnPoint(tile);
-                }
-                else if (selectedBuildTool == BuildTool.DestinationPoint) {
-                    board.ToggleDestination(tile);
-                }
+            else if (selectedBuildTool == BuildTool.DestinationPoint) {
+                board.ToggleDestination(tile);
             }
         }
     }

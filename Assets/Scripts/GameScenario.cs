@@ -40,6 +40,14 @@ public class GameScenario : ScriptableObject {
     [SerializeField, Range(0f, 1f)]
     float cycleSpeedUp = 0.5f;
 
+    [SerializeField]
+    public int livesAvailable = 20;
+
+    [SerializeField, Range(0f, 10f)]
+    public float laserTowersAvailable = 1.2f;
+    [SerializeField, Range(0f, 10f)]
+    public float mortarTowersAvailable = 0.5f;
+
     public State Begin() => new State(this);
 
     public LevelData LoadLevelData() {
