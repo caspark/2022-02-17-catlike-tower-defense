@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour {
@@ -50,8 +51,10 @@ public class GameBoard : MonoBehaviour {
 
     GameTileContentFactory contentFactory;
 
+    [ShowInInspector]
     Vector2Int size;
 
+    [ShowInInspector]
     GameTile[] tiles = new GameTile[0];
 
     Queue<GameTile> searchFrontier = new Queue<GameTile>();

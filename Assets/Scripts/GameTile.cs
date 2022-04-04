@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class GameTile : MonoBehaviour {
@@ -12,17 +13,21 @@ public class GameTile : MonoBehaviour {
 
     GameTile north, east, south, west, nextOnPath;
 
+    [ShowInInspector]
     int distance;
 
     public bool HasPath => distance != int.MaxValue;
 
     public bool IsAlternative { get; set; }
+
+    [ShowInInspector]
     public GameTile NextTileOnPath => nextOnPath;
 
     public Direction PathDirection { get; private set; }
 
     public Vector3 ExitPoint { get; private set; }
 
+    [ShowInInspector]
     private GameTileContent content;
     public GameTileContent Content {
         get => content;
@@ -33,6 +38,7 @@ public class GameTile : MonoBehaviour {
             }
             content = value;
             content.transform.localPosition = transform.localPosition;
+            name = $"GameTile: {content.Type}";
         }
     }
 
