@@ -2,7 +2,7 @@
 
 A shapes & pirates themed tower defense game.
 
-You can play a web version of it at https://caspark.github.io/catlike-tower-defense/ :)
+You can play a web version of it at https://caspark.github.io/catlike-tower-defense/ , or download a release from https://github.com/caspark/catlike-tower-defense/releases :)
 
 * Note the speed controls in the top right.
 * You get more towers every few seconds.
