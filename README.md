@@ -4,6 +4,8 @@ A shapes & pirates themed tower defense game.
 
 You can play a web version of it at https://caspark.github.io/catlike-tower-defense/ , or download a release from https://github.com/caspark/catlike-tower-defense/releases :)
 
+* Left click to build, use menu items (or 1/2/3 keys) to choose structure to build
+* Pan camera with WASD/arrows or middle mouse, rotate with right mouse, zoom in & out with scroll wheel
 * Note the speed controls in the top right.
 * You get more towers every few seconds.
 
