@@ -1,6 +1,15 @@
 # Catlike Tower Defense
 
-A game originally based on the [Catlike Coding Tower Defence tutorial](https://catlikecoding.com/unity/tutorials/tower-defense/), with many changes and extensions to turn it into an actual game of sorts:
+A shapes & pirates themed tower defense game.
+
+You can play a web version of it at https://caspark.github.io/catlike-tower-defense/ :)
+
+* Note the speed controls in the top right.
+* You get more towers every few seconds.
+
+## Details
+
+This was based on the [Catlike Coding Tower Defence tutorial](https://catlikecoding.com/unity/tutorials/tower-defense/), with many changes and extensions to turn it into an actual game of sorts:
 
 * Unity 2021.x instead of 2018
 * Use Inputsystem package instead of legacy Input module
